@@ -1,3 +1,5 @@
+import Footer from '@/components/Footer';
+import PromptTipsBalloons from '@/components/PromptTipsBalloons';
 import api from '@/configs/axios';
 import { authClient } from '@/lib/auth-client';
 import { Loader2Icon } from 'lucide-react';
@@ -34,7 +36,7 @@ const Home = () => {
   }
 
   return (
-  
+  <><div >
       <section className="flex flex-col items-center text-white text-sm pb-20 px-4 font-poppins">
 
         <a href="#" className="flex items-center gap-2  rounded-full p-1 pr-3 text-sm mt-20">
@@ -53,7 +55,8 @@ const Home = () => {
         </p>
 
         <form onSubmit={onSubmitHandler} className="bg-white/10 max-w-2xl w-full rounded-xl p-4 mt-10 border border-indigo-600/70 focus-within:ring-2 ring-indigo-500 transition-all">
-          <textarea onChange={e => setInput(e.target.value)} className="bg-transparent outline-none text-gray-300 resize-none w-full" rows={4} placeholder="Describe your presentation in details" required />
+          <textarea onChange={e => setInput(e.target.value)} className="bg-transparent outline-none text-gray-300 resize-none w-full" rows={4} 
+          placeholder="Make a landing page for my online math tutoring. It's for high school students who are stressed about math. I want it to look clean and modern, not boring. Include a WhatsApp icon where the customer can contact me using my phone number 123456123 and some student quotes. Use blue and white colors." required />
           <button className="ml-auto flex items-center gap-2 bg-gradient-to-r from-[#CB52D4] to-indigo-600 rounded-md px-4 py-2">
             {!loading ? 'Create with AI' : (
               <>
@@ -64,10 +67,14 @@ const Home = () => {
           </button>
         </form>
         
-        
+        {/* Floating Tips Balloons */}
+        <PromptTipsBalloons />
       </section>
-     
-
+      </div>
+      <div className='pt-40'>
+      <Footer  />
+      </div>
+ </>
   )
 }
 
