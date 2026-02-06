@@ -31,6 +31,7 @@ export interface Project {
     user?: User;
     isPublished?: boolean;
     versionId?: string;
+    custom_domain?: string;
     conversation: Message[];
     versions: Version[];
     current_version_index: string;

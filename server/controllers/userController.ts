@@ -470,19 +470,14 @@ Add the following libraries in the page header when necessary:
 
 ## CTA Button Configuration
 
-**CRITICAL: All CTA buttons must use the same URL placeholder for easy customization:**
+**CRITICAL: All CTA buttons must use the The Call to Action Link shared by the user**
 
-html example:
-<a href="#cta-action" class="...">Button Text</a>
-
-- Use href="#cta-action" for ALL call-to-action buttons throughout the page
 - This includes: Hero CTA, pricing CTAs, final CTA section, and any other action buttons
-- The page owner will customize this URL later to their actual destination
 - Ensure CTAs are visually prominent with proper Tailwind classes
 
 ## Social Media Configuration
 
-**Footer social media section must include ONLY these four platforms:**
+**Footer social media section can use the code bellow as example and for the href use the info from the user:**
 
 html example:
 <div class="flex space-x-6 justify-center">
@@ -502,8 +497,6 @@ html example:
     </a>
 </div>
 
-- Use '#' as placeholder hrefs for all social media links in the case the user does not give specific URLs
-- Page owner will customize these URLs later
 - Include hover effects for better UX
 - Ensure proper spacing and sizing
 
@@ -525,6 +518,7 @@ html example:
    - Animated counters for statistics
    - Form validation (if forms are included)
    - Working menu toggle for mobile
+   - Parallax effects (if make sense for the design)
 
 4. **Accessibility**
    - Semantic HTML structure
@@ -583,9 +577,9 @@ html example:
 - Include microcopy that reduces friction
 - Add subtle animations to draw attention
 - Place CTAs at strategic points throughout the page
-- **Remember: All CTAs use 'href="#cta-action"'**
+- **Remember: All CTAs use the CTA informed by the user**
 
-## Example Color Schemes (Choose Based on Industry)
+## Example Color Schemes if not informed explicitly by the user (Choose Based on Industry)
 
 - **Tech/SaaS**: Blue gradient + white, accents of purple/cyan
 - **Finance**: Dark navy + gold, professional and trustworthy
@@ -613,8 +607,6 @@ Generate a complete, ready-to-use HTML document that includes:
 - Test the design would make someone stop scrolling and say "wow"
 - Balance beauty with functionality - never sacrifice usability for aesthetics
 - Include actual working code, not placeholders or comments saying "add functionality here"
-- **ALL CTAs must use 'href="#cta-action"' for easy customization**
-- **Footer must include ONLY the 4 specified social media icons with '#' placeholder links**
 - **Testimonials must have visible, contrasting backgrounds with proper styling**
 - **Always initialize Lucide icons in JavaScript: 'lucide.createIcons()'**
 
@@ -623,13 +615,12 @@ Generate a complete, ready-to-use HTML document that includes:
 When you receive the user information:
 
 1. Parse the business name, industry, target audience, and key features
-2. Identify the main value proposition and unique selling points
+2. Elaborate from the user if informed or identify the main value proposition and unique selling points
 3. Determine the appropriate tone (professional, playful, luxury, etc.)
 4. Generate missing sections with contextually appropriate content
 5. Choose a color scheme that matches the brand personality
 6. Create a cohesive narrative that flows from problem to solution to action
-7. Ensure all CTAs point to '#cta-action' and footer has only the 4 social media icons
-8. When necessary image of something, create an empty default image that can be replaced with a real image later.
+7. When necessary image of something, create an empty default image that can be replaced with a real image later.
 
 Generate a landing page that is not just functional, but exceptional - one that would genuinely convert visitors into customers.
 - Return the HTML Code Only, nothing else

@@ -8,6 +8,7 @@ import api from '@/configs/axios'
 import { toast } from 'sonner'
 import { authClient } from '@/lib/auth-client'
 
+
 const Projects = () => {
   const {projectId} = useParams()
   const navigate = useNavigate()
@@ -131,7 +132,11 @@ const Projects = () => {
           <LaptopIcon onClick={()=> setDevice('desktop')} className={`size-6 p-1 rounded cursor-pointer ${device === 'desktop' ? "bg-gray-700" : ""}`}/>
         </div>
         {/* right  */}
-        <div className='flex items-center justify-end gap-3 flex-1 text-xs sm:text-sm'>
+        <div className='flex items-center justify-end gap-3 flex-1 text-xs sm:text-sm sm:flex-row sm:items-center'>
+            <div className='flex items-center gap-2 w-full sm:w-auto'>
+              <span className='text-gray-400'>Custom Domain:</span>
+              <input placeholder='e.g. https://yourdomain.com' value={project.custom_domain} className=' bg-gray-800 text-white px-3 py-1.5 rounded-md border border-gray-700 focus:ring-2 focus:ring-gray-500 focus:outline-none transition-colors w-48 lg:w-80 xl:w-96'  />
+              </div>
               <button onClick={saveProject} disabled={isSaving} className='max-sm:hidden bg-gray-800 hover:bg-gray-700 text-white px-3.5 py-1 flex items-center gap-2 rounded sm:rounded-sm transition-colors border border-gray-700'>
                 {isSaving ? <Loader2Icon className="animate-spin" size={16}/> : <SaveIcon size={16}/>} Save
               </button>

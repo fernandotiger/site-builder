@@ -40,6 +40,7 @@ model WebsiteProject {
   current_version_index String  @default("")
   userId                String
   isPublished           Boolean @default(false)
+  custom_domain         String?
 
   // Relations
   conversation Conversation[]

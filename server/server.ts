@@ -1,11 +1,16 @@
-import express, { Request, Response } from 'express';
 import 'dotenv/config';
+//import dotenv from 'dotenv';
+//dotenv.config();
+
+import express, { Request, Response } from 'express';
+
 import cors from 'cors';
 import { toNodeHandler } from 'better-auth/node';
 import { auth } from './lib/auth.js';
 import userRouter from './routes/userRoutes.js';
 import projectRouter from './routes/projectRoutes.js';
 import { stripeWebhook } from './controllers/stripeWebhook.js';
+import imageRouter from './routes/image.js';
 
 const app = express();
 
@@ -29,6 +34,7 @@ app.get('/', (req: Request, res: Response) => {
 app.use('/api/user', userRouter);
 app.use('/api/project', projectRouter);
 
+app.use('/api/image', imageRouter);
 
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);

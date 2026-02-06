@@ -3,12 +3,27 @@ import type { Project } from '../types';
 import { iframeScript } from '../assets/assets';
 import EditorPanel from './EditorPanel';
 import LoaderSteps from './LoaderSteps';
+import ImageSettingSection from './ImageSettingsSection';
 
 interface ProjectPreviewProps {
     project: Project;
     isGenerating: boolean;
     device?: 'phone' | 'tablet' | 'desktop';
     showEditorPanel?: boolean;
+}
+
+interface ElementPayload {
+    elementType: string;
+    isImage: boolean;
+    tagName: string;
+    content: string | null;
+    id: string;
+    className: string;
+    src?: string;
+    alt?: string;
+    naturalWidth?: number;
+    naturalHeight?: number;
+    currentSrc?: string;
 }
 
 export interface ProjectPreviewRef {
@@ -18,7 +33,8 @@ export interface ProjectPreviewRef {
 const ProjectPreview = forwardRef<ProjectPreviewRef, ProjectPreviewProps>(({project, isGenerating, device = 'desktop', showEditorPanel = true}, ref) => {
 
     const iframeRef = useRef<HTMLIFrameElement>(null)
-    const [selectedElement, setSelectedElement] = useState<any>(null)
+    const [selectedElement, setSelectedElement] = useState<any | null>(null)
+    const [selectedImage, setSelectedImage] = useState<any  | null>(null)
 
     const resolutions = {
         phone: 'w-[412px]',
@@ -54,14 +70,21 @@ const ProjectPreview = forwardRef<ProjectPreviewRef, ProjectPreviewProps>(({proj
     useEffect(()=>{
         const handleMessage = (event: MessageEvent)=>{
             if(event.data.type === 'ELEMENT_SELECTED'){
+                if (event.data.payload.tagName === "IMG") {
+                    const payload = event.data.payload as ElementPayload;
+                    setSelectedImage(payload);
+                }
                 setSelectedElement(event.data.payload);
             }else if(event.data.type === 'CLEAR_SELECTION'){
-                setSelectedElement(null)
+                setSelectedElement(null);
+                setSelectedImage(null);
             }
         }
+        
         window.addEventListener('message', handleMessage);
         return ()=> window.removeEventListener('message', handleMessage)
-    },[])
+    },[]);
+
 
     const handleUpdate = (updates: any)=>{
         if(iframeRef.current?.contentWindow){
@@ -87,12 +110,20 @@ const ProjectPreview = forwardRef<ProjectPreviewRef, ProjectPreviewProps>(({proj
     <div className='relative h-full bg-gray-900 flex-1 rounded-xl overflow-hidden max-sm:ml-2'>
       {project.current_code ? (
         <>
-        <iframe 
+        <iframe id="ai-preview-iframe"
         ref={iframeRef}
         srcDoc={injectPreview(project.current_code)}
-        className={`h-full max-sm:w-full ${resolutions[device]} mx-auto transition-all`}
+        className={`h-full max-sm:w-full ${resolutions[device]} mx-auto transition-all`} 
         />
         {showEditorPanel && selectedElement && (
+            selectedElement?.tagName == 'IMG' ?
+            <ImageSettingSection selectedEl={selectedImage} onClose={()=>{
+                setSelectedElement(null);
+                if(iframeRef.current?.contentWindow){
+                    iframeRef.current.contentWindow.postMessage({type: 'CLEAR_SELECTION_REQUEST'}, '*')
+                }
+            }} />
+                :
             <EditorPanel selectedElement={selectedElement}
             onUpdate={handleUpdate} onClose={()=>{
                 setSelectedElement(null);
@@ -100,6 +131,7 @@ const ProjectPreview = forwardRef<ProjectPreviewRef, ProjectPreviewProps>(({proj
                     iframeRef.current.contentWindow.postMessage({type: 'CLEAR_SELECTION_REQUEST'}, '*')
                 }
             }}/>
+
         )}
         </>
       ): isGenerating && (

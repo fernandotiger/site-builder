@@ -202,11 +202,10 @@ export const iframeScript = `
             selectedElement.classList.add('ai-selected-element');
             selectedElement.setAttribute('data-ai-selected', 'true');
 
+            const isImage = target.tagName === 'IMG';
             const computedStyle = window.getComputedStyle(selectedElement);
 
-            window.parent.postMessage({
-                type: 'ELEMENT_SELECTED',
-                payload: {
+            const payload = {
                 tagName: selectedElement.tagName,
                 className: selectedElement.className,
                 text: selectedElement.innerText,
@@ -216,8 +215,24 @@ export const iframeScript = `
                     backgroundColor: computedStyle.backgroundColor,
                     color: computedStyle.color,
                     fontSize: computedStyle.fontSize
-                }
-                }
+                },
+                href: target.tagName === 'A' ? target.href : null
+            }
+                // ✅ Add image-specific properties if it's an image
+            if (isImage) {
+                payload.src = target.src;
+                payload.alt = target.alt;
+                payload.naturalWidth = target.naturalWidth;
+                payload.naturalHeight = target.naturalHeight;
+                payload.currentSrc = target.currentSrc;
+                payload.width = target.width;
+                payload.height = target.height;
+                payload.isImage = isImage;
+            }
+
+            window.parent.postMessage({
+                type: 'ELEMENT_SELECTED',
+                payload: payload
             }, '*');
             });
 
