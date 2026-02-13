@@ -10,25 +10,27 @@ import { authClient } from '@/lib/auth-client'
 
 
 const Projects = () => {
-  const {projectId} = useParams()
-  const navigate = useNavigate()
-  const {data: session, isPending} = authClient.useSession()
+  const {projectId} = useParams();
+  const navigate = useNavigate();
+  const {data: session, isPending} = authClient.useSession();
 
-  const [project, setProject] = useState<Project | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [project, setProject] = useState<Project | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [customDomain, setCustomDomain] = useState<string | null>(null);
 
-  const [isGenerating, setIsGenerating] = useState(true)
-  const [device, setDevice] = useState<'phone' | 'tablet' | 'desktop'>("desktop")
+  const [isGenerating, setIsGenerating] = useState(true);
+  const [device, setDevice] = useState<'phone' | 'tablet' | 'desktop'>("desktop");
 
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [isSaving, setIsSaving] = useState(false)
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
-  const previewRef = useRef<ProjectPreviewRef>(null)
+  const previewRef = useRef<ProjectPreviewRef>(null);
 
   const fetchProject = async () => {
     try {
       const { data } = await api.get(`/api/user/project/${projectId}`);
-      setProject(data.project)
+      setProject(data.project);
+      setCustomDomain(data.project.custom_domain || null);
       setIsGenerating(data.project.current_code ? false : true)
       setLoading(false)
     } catch (error: any) {
@@ -43,7 +45,7 @@ const Projects = () => {
     if(!code) return;
     setIsSaving(true);
     try {
-      const { data } = await api.put(`/api/project/save/${projectId}`, {code});
+      const { data } = await api.put(`/api/project/save/${projectId}`, {'code': code, 'custom_domain': customDomain});
       toast.success(data.message)
     } catch (error: any) {
       toast.error(error?.response?.data?.message || error.message);
@@ -74,7 +76,16 @@ const Projects = () => {
     try {
       const { data } = await api.get(`/api/user/publish-toggle/${projectId}`);
       toast.success(data.message)
-      setProject((prev)=> prev ? ({...prev, isPublished: !prev.isPublished}) : null)
+      setProject((prev)=> prev ? ({...prev, isPublished: !prev.isPublished}) : null);
+
+      let result: any;
+      if(!project?.isPublished){
+        result = await api.post('/api/deploy/add', {'projectId': projectId});
+      } else {
+        result = await api.delete('/api/deploy/delete', {data: {'projectId': projectId}});
+      }
+      console.log(result);
+      setTimeout(() => toast.success(result.data.message), 2000);
     } catch (error: any) {
       toast.error(error?.response?.data?.message || error.message);
       console.log(error);
@@ -135,7 +146,7 @@ const Projects = () => {
         <div className='flex items-center justify-end gap-3 flex-1 text-xs sm:text-sm sm:flex-row sm:items-center'>
             <div className='flex items-center gap-2 w-full sm:w-auto'>
               <span className='text-gray-400'>Custom Domain:</span>
-              <input placeholder='e.g. https://yourdomain.com' value={project.custom_domain} className=' bg-gray-800 text-white px-3 py-1.5 rounded-md border border-gray-700 focus:ring-2 focus:ring-gray-500 focus:outline-none transition-colors w-48 lg:w-80 xl:w-96'  />
+              <input placeholder='e.g. https://yourdomain.com' value={customDomain || ""} onChange={(e) => setCustomDomain(e.target.value)} className=' bg-gray-800 text-white px-3 py-1.5 rounded-md border border-gray-700 focus:ring-2 focus:ring-gray-500 focus:outline-none transition-colors w-48 lg:w-80 xl:w-96'  />
               </div>
               <button onClick={saveProject} disabled={isSaving} className='max-sm:hidden bg-gray-800 hover:bg-gray-700 text-white px-3.5 py-1 flex items-center gap-2 rounded sm:rounded-sm transition-colors border border-gray-700'>
                 {isSaving ? <Loader2Icon className="animate-spin" size={16}/> : <SaveIcon size={16}/>} Save

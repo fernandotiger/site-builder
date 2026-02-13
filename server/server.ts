@@ -11,6 +11,7 @@ import userRouter from './routes/userRoutes.js';
 import projectRouter from './routes/projectRoutes.js';
 import { stripeWebhook } from './controllers/stripeWebhook.js';
 import imageRouter from './routes/image.js';
+import deployRouter from './routes/deployroutes.js';
 
 const app = express();
 
@@ -35,6 +36,8 @@ app.use('/api/user', userRouter);
 app.use('/api/project', projectRouter);
 
 app.use('/api/image', imageRouter);
+
+app.use('/api/deploy', deployRouter);
 
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);

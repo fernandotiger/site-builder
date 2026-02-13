@@ -305,7 +305,8 @@ export const saveProjectCode = async (req: Request, res: Response) => {
     try {
         const userId = req.userId;
         const { projectId } = req.params;
-        const {code} = req.body;
+        const code = req.body.code;
+        const customDomain = req.body.custom_domain;
 
         if(!userId){
             return res.status(401).json({ message: 'Unauthorized' });
@@ -325,7 +326,7 @@ export const saveProjectCode = async (req: Request, res: Response) => {
 
         await prisma.websiteProject.update({
             where: {id: projectId},
-            data: {current_code: code, current_version_index: ''}
+            data: {current_code: code, current_version_index: '', custom_domain: customDomain}
         })
 
         res.json({ message: 'Project saved successfully' });
