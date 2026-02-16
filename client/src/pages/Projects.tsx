@@ -143,26 +143,65 @@ const Projects = () => {
           <LaptopIcon onClick={()=> setDevice('desktop')} className={`size-6 p-1 rounded cursor-pointer ${device === 'desktop' ? "bg-gray-700" : ""}`}/>
         </div>
         {/* right  */}
-        <div className='flex items-center justify-end gap-3 flex-1 text-xs sm:text-sm sm:flex-row sm:items-center'>
-            <div className='flex items-center gap-2 w-full sm:w-auto'>
-              <span className='text-gray-400'>Custom Domain:</span>
-              <input placeholder='e.g. https://yourdomain.com' value={customDomain || ""} onChange={(e) => setCustomDomain(e.target.value)} className=' bg-gray-800 text-white px-3 py-1.5 rounded-md border border-gray-700 focus:ring-2 focus:ring-gray-500 focus:outline-none transition-colors w-48 lg:w-80 xl:w-96'  />
-              </div>
-              <button onClick={saveProject} disabled={isSaving} className='max-sm:hidden bg-gray-800 hover:bg-gray-700 text-white px-3.5 py-1 flex items-center gap-2 rounded sm:rounded-sm transition-colors border border-gray-700'>
-                {isSaving ? <Loader2Icon className="animate-spin" size={16}/> : <SaveIcon size={16}/>} Save
-              </button>
-              <Link target='_blank' to={`/preview/${projectId}`} className="flex items-center gap-2 px-4 py-1 rounded sm:rounded-sm border border-gray-700 hover:border-gray-500 transition-colors">
-                <FullscreenIcon size={16} /> Preview
-              </Link>
-              <button onClick={downloadCode} className='bg-linear-to-br from-blue-700 to-blue-600 hover:from-blue-600 hover:to-blue-500 text-white px-3.5 py-1 flex items-center gap-2 rounded sm:rounded-sm transition-colors'>
-                <ArrowBigDownDashIcon size={16} /> Download
-              </button>
-              <button onClick={togglePublish} className='bg-linear-to-br from-indigo-700 to-indigo-600 hover:from-indigo-600 hover:to-indigo-500 text-white px-3.5 py-1 flex items-center gap-2 rounded sm:rounded-sm transition-colors'>
-                {project.isPublished ?
-                <EyeOffIcon size={16}/> : <EyeIcon size={16}/> 
-              }
-                {project.isPublished ? "Unpublish" : "Publish"}
-              </button>
+        <div className='flex flex-col gap-3 flex-1 text-xs sm:text-sm lg:flex-row lg:items-center lg:justify-end'>
+          {/* Custom Domain Section - Full width on mobile, auto on desktop */}
+          <div className='flex flex-col sm:flex-row sm:items-center gap-2 w-full lg:w-auto'>
+            <label htmlFor="customDomain" className='text-gray-400 whitespace-nowrap hidden sm:block'>
+              Custom Domain:
+            </label>
+            <input 
+              id="customDomain" 
+              placeholder='e.g. yourdomain.com' 
+              value={customDomain || ""} 
+              onChange={(e) => setCustomDomain(e.target.value)} 
+              className='bg-gray-800 text-white px-3 py-2 rounded-md border border-gray-700 focus:ring-2 focus:ring-gray-500 focus:outline-none transition-colors w-full sm:flex-1 lg:w-64 xl:w-80'
+            />
+          </div>
+
+          {/* Action Buttons Section - Stacked on mobile, horizontal on tablet+ */}
+          <div className='flex flex-col sm:flex-row gap-2 sm:gap-1.5'>
+            {/* Save Button - Hidden on mobile, shown on small screens+ */}
+            <button 
+              onClick={saveProject} 
+              disabled={isSaving} 
+              className='hidden sm:flex bg-gray-800 hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed text-white px-3.5 py-2 items-center justify-center gap-2 rounded transition-colors border border-gray-700 whitespace-nowrap'
+              aria-label="Save project"
+            >
+              {isSaving ? <Loader2Icon className="animate-spin" size={16}/> : <SaveIcon size={16}/>} 
+              Save
+            </button>
+
+            {/* Preview Button */}
+            <Link 
+              target='_blank' 
+              to={`/preview/${projectId}`} 
+              className="flex items-center justify-center gap-2 px-4 py-2 rounded border border-gray-700 hover:border-gray-500 hover:bg-gray-800/50 transition-colors whitespace-nowrap"
+              aria-label="Preview project"
+            >
+              <FullscreenIcon size={16} /> 
+              Preview
+            </Link>
+
+            {/* Download Button */}
+            <button 
+              onClick={downloadCode} 
+              className='bg-gradient-to-br from-blue-700 to-blue-600 hover:from-blue-600 hover:to-blue-500 text-white px-3.5 py-2 flex items-center justify-center gap-2 rounded transition-colors shadow-sm hover:shadow-md whitespace-nowrap'
+              aria-label="Download code"
+            >
+              <ArrowBigDownDashIcon size={16} /> 
+              Download
+            </button>
+
+            {/* Publish/Unpublish Button */}
+            <button 
+              onClick={togglePublish} 
+              className='bg-gradient-to-br from-indigo-700 to-indigo-600 hover:from-indigo-600 hover:to-indigo-500 text-white px-3.5 py-2 flex items-center justify-center gap-2 rounded transition-colors shadow-sm hover:shadow-md whitespace-nowrap'
+              aria-label={project.isPublished ? "Unpublish project" : "Publish project"}
+            >
+              {project.isPublished ? <EyeOffIcon size={16}/> : <EyeIcon size={16}/>}
+              {project.isPublished ? "Unpublish" : "Publish"}
+            </button>
+          </div>
         </div>
       </div>
       <div className='flex-1 flex overflow-auto'>

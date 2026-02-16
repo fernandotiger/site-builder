@@ -186,7 +186,7 @@ function ImageSettingSection({ selectedEl, onClose }: Props) {
         <div className='absolute top-4 right-4 w-100 bg-white rounded-lg shadow-xl border border-gray-200 p-4 z-50 animate-fade-in fade-in'>
         <div className='flex justify-between items-center mb-4'>
             <h2 className="flex gap-2 items-center font-bold font-semibold text-gray-800">
-                <ImageIcon /> Image Settings
+                <ImageIcon /> Click on the image to change
             </h2>
             <button onClick={onClose} className='p-1 hover:bg-gray-100 rounded-full'>
                 <X className='w-4 h-4 text-gray-500'/>

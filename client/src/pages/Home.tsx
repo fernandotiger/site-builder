@@ -116,6 +116,14 @@ const questions: Question[] = [
     placeholder: 'e.g., https://twitter.com/yourcompany, https://linkedin.com/company/yourcompany (leave blank if none)',
     required: false
   },
+  {
+    id: 'socialMediaTracking',
+    category: 'Social Proof',
+    question: 'Do you want to include your Social Media? Paste the tracking codes separated by commas.',
+    affirmation: 'The social media tracking codes to be included in the head of the HTML are: ',
+    placeholder: 'e.g., <script>(function(...))</script>, <script>(function2(...))</script> (leave blank if none)',
+    required: false
+  },
   // Visual & Brand Assets
   {
     id: 'brandGuidelines',
@@ -293,7 +301,7 @@ const Home = () => {
             className="bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-xl rounded-2xl p-8 border border-white/10 shadow-2xl animate-fadeIn"
             key={currentQuestionIndex}
           >
-            <h2 className="text-2xl md:text-3xl font-bold text-white mb-6 leading-relaxed">
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-6 leading-relaxed">
               {currentQuestion.question}
               {!currentQuestion.required && (
                 <span className="ml-3 text-sm font-normal text-gray-400">(optional)</span>
