@@ -34,12 +34,12 @@ export interface ServiceDeployResult {
  * existing deployment (updates HTML + Caddy route in-place).
  */
 export async function deployProject(
-  projectId: string
+  projectId: string, userId: string
 ): Promise<ServiceDeployResult> {
 
   // ── 1. Fetch project from DB ─────────────────────────────────────────────
   const project = await prisma.websiteProject.findFirst({
-    where: { id: projectId },
+    where: { id: projectId, userId },
     select: {
       id:            true,
       custom_domain: true,
@@ -119,12 +119,12 @@ export async function deployProject(
  * Called when a user deletes their project or changes their custom domain.
  */
 export async function undeployProject(
-  projectId:   string,
+  projectId:   string, userId: string, 
   deleteFiles = false
 ): Promise<ServiceDeployResult> {
 
   const project = await prisma.websiteProject.findFirst({
-    where: { id: projectId },
+    where: { id: projectId, userId },
     select: { id: true, custom_domain: true },
   });
 
@@ -150,7 +150,7 @@ export async function undeployProject(
 */
     return {
       success: true,
-      message: `Site for ${project.custom_domain} removed from Caddy.`,
+      message: `Site for ${project.custom_domain} removed from the Web Configuration.`,
     };
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : String(err);

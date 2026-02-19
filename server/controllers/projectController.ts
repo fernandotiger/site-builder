@@ -1,11 +1,13 @@
 import {Request, Response} from 'express'
 import prisma from '../lib/prisma.js';
 import openai from '../configs/openai.js';
+import { getAiModelNameForUser, getAiModelNameRevisionForUser } from '../configs/aiConfigResolver.js';
 
-// Controller Function to Make Revision
+// Controller Function to Make Revision 
 export const makeRevision = async (req: Request, res: Response) => {
     const userId = req.userId;
-
+    const modelName = await getAiModelNameForUser(userId as string);
+    const modelNameRevision = await getAiModelNameRevisionForUser(userId as string);
     try {
         
         const {projectId} = req.params;
@@ -46,12 +48,12 @@ export const makeRevision = async (req: Request, res: Response) => {
 
         await prisma.user.update({
             where: {id: userId},
-            data: {credits: {decrement: 5}}
+            data: {credits: {decrement: 3}}
         })
 
         // Enhance user prompt
         const promptEnhanceResponse = await openai.chat.completions.create({
-            model: process.env.OPENROUTER_MODEL_NAME as string,
+            model: modelName,
             messages: [
                 {
                     role: 'system',
@@ -92,7 +94,7 @@ export const makeRevision = async (req: Request, res: Response) => {
 
         // Generate website code
         const codeGenerationResponse = await openai.chat.completions.create({
-            model: process.env.OPENROUTER_MODEL_NAME as string,
+            model: modelNameRevision,
             messages: [
                 {
                     role: 'system',
@@ -121,17 +123,17 @@ export const makeRevision = async (req: Request, res: Response) => {
 
         if(!code){
              await prisma.conversation.create({
-            data: {
-                role: 'assistant',
-                content: "Unable to generate the code, please try again",
-                projectId
-            }
-        })
-        await prisma.user.update({
-            where: {id: userId},
-            data: {credits: {increment: 5}}
-        })
-        return;
+                data: {
+                    role: 'assistant',
+                    content: "Unable to generate the code, please try again",
+                    projectId
+                }
+            })
+            await prisma.user.update({
+                where: {id: userId},
+                data: {credits: {increment: 3}}
+            })
+            return;
         }
 
         const version = await prisma.version.create({

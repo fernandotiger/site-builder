@@ -63,7 +63,7 @@ export const uploadImage = async (req: Request, res: Response) : Promise<void> =
             folder: '/uploads', // Optional: organize uploads
             useUniqueFileName: true,
         });
-console.log('ImageKit upload OK:', result);
+
         const response: UploadResponse = {
             url: result.url,
             fileId: result.fileId,
@@ -72,7 +72,7 @@ console.log('ImageKit upload OK:', result);
         };
 
         res.status(200).json(response);
-        console.log('ImageKit upload FIM', );
+       
     } catch (error) {
         console.error('ImageKit upload error:', error);
         console.log('ImageKit upload error:', error);
@@ -96,7 +96,7 @@ console.log(prompt)
             res.status(400).json({ error: 'Valid prompt is required' } as ErrorResponse);
             return;
         }
-
+/*
         // Sanitize prompt for URL
         const sanitizedPrompt = prompt.trim().replace(/[^a-zA-Z0-9\s-]/g, '');
 
@@ -108,7 +108,7 @@ console.log(prompt)
         const url = `${process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT_PROMPT}${encodeURIComponent(sanitizedPrompt)}/${Date.now()}.png?tr=`;
 
 console.log("url-: " + url)
-        res.status(200).json({ url } as { url: string });
+        res.status(200).json({ url } as { url: string });*/
     } catch (error) {
         console.error('AI image generation error:', error);
         console.log(error)

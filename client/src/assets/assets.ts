@@ -8,26 +8,26 @@ export const appPlans = [
         {
             id: 'basic',
             name: 'Basic',
-            price: '$5',
-            credits: 100,
+            price: '$0',
+            credits: 10,
             description: 'Start Now, scale up as you grow.',
-            features: ['Upto 20 Creations', 'Limited Revisions', 'Basic AI Models', 'email support', 'Basic analytics',],
+            features: ['Up to 1 Creation', 'Limited Revisions', 'Basic AI Models', 'Email support', 'Tutorial',],
         },
         {
             id: 'pro',
             name: 'Pro',
-            price: '$19',
-            credits: 400,
+            price: '€7',
+            credits: 50,
             description: 'Add credits to create more projects',
-            features: ['Upto 80 Creations', 'Extended Revisions', 'Advanced AI Models', 'priority email support', 'Advanced analytics',],
+            features: ['Up to 10 Creations', 'Custom Domain', 'Advanced AI Models', 'Extended Revisions', 'Page Element Edition', 'Landing Page Hosting', 'Priority email support', 'Tutorial',],
         },
         {
             id: 'enterprise',
             name: 'Enterprise',
-            price: '$49',
-            credits: 1000,
+            price: '€25',
+            credits: 250,
             description: 'Add credits to create more projects',
-            features: ['Upto 200 Creations', 'Increased Revisions', 'Advanced AI Models', 'email + chat support', 'Advanced analytics',],
+            features: ['Up to 50 Creations', 'Custom Domain', 'Advanced AI Models', 'Increased Revisions', 'Page Element Edition', 'Landing Page Hosting', 'Priority email + chat support', 'Tutorial',],
         }
     ]
 

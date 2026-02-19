@@ -16,13 +16,16 @@ interface Plan {
 
 const Pricing = () => {
 
-    const {data: session} = authClient.useSession()
-    const [plans] = React.useState<Plan[]>(appPlans)
+    const {data: session} = authClient.useSession();
+    const [plans] = React.useState<Plan[]>(appPlans);
 
     const handlePurchase = async (planId: string) => {
         try {
-            if(!session?.user) return toast('Please login to purchase credits')
-            const {data} = await api.post('/api/user/purchase-credits', {planId})
+            if(!session?.user) {
+                if(planId === "basic") return toast('Please sign up to get started');
+                return toast('Please login to purchase credits');
+            }
+            const {data} = await api.post('/api/user/purchase-credits', {planId});
             window.location.href = data.payment_link;
         } catch (error: any) {
             toast.error(error?.response?.data?.message || error.message);
@@ -67,7 +70,7 @@ const Pricing = () => {
                         ))}
                     </div>
                 </div>
-                <p className='mx-auto text-center text-sm max-w-md mt-10 text-white/60 font-light'>Project <span className='text-white'> Creation / Revision</span> consume <span className='text-white'>5 credits </span>. You can purchase more credits to create more projects.</p>
+                <p className='mx-auto text-center text-sm max-w-md mt-10 text-white/60 font-light'>Project <span className='text-white'> Creation </span> consume <span className='text-white'>5 credits </span>. <span className='text-white'>Revision</span> consume <span className='text-white'>3 credits </span>. You can purchase more credits to create more projects.</p>
       </div>
       <Footer />
     </>

@@ -2,6 +2,7 @@ import {Request, Response} from 'express'
 import prisma from '../lib/prisma.js';
 import openai from '../configs/openai.js';
 import Stripe from 'stripe'
+import { getAiModelNameForUser } from '../configs/aiConfigResolver.js';
 
 // Get User Credits
 export const getUserCredits = async (req: Request, res: Response) => {
@@ -25,6 +26,7 @@ export const getUserCredits = async (req: Request, res: Response) => {
 // Controller Function to create New Project
 export const createUserProject = async (req: Request, res: Response) => {
     const userId = req.userId;
+    const modelName = await getAiModelNameForUser(userId as string);
     try {
         const { initial_prompt } = req.body;
 
@@ -116,7 +118,7 @@ export const createUserProject = async (req: Request, res: Response) => {
 
         // Generate website code
         const codeGenerationResponse = await openai.chat.completions.create({
-            model: process.env.OPENROUTER_MODEL_NAME as string,
+            model: modelName,
             messages: [
                 {
                     role: 'system',
@@ -133,17 +135,17 @@ export const createUserProject = async (req: Request, res: Response) => {
 
         if(!code){
              await prisma.conversation.create({
-            data: {
-                role: 'assistant',
-                content: "Unable to generate the code, please try again",
-                projectId: project.id
-            }
-        })
-        await prisma.user.update({
-            where: {id: userId},
-            data: {credits: {increment: 5}}
-        })
-        return;
+                data: {
+                    role: 'assistant',
+                    content: "Unable to generate the code, please try again",
+                    projectId: project.id
+                }
+            })
+            await prisma.user.update({
+                where: {id: userId},
+                data: {credits: {increment: 5}}
+            })
+            return;
         }
 
         // Create Version for the project
@@ -274,25 +276,27 @@ export const purchaseCredits = async (req: Request, res: Response) => {
         }
 
         const plans = {
-            basic: {credits: 100, amount: 5},
-            pro: {credits: 400, amount: 19},
-            enterprise: {credits: 1000, amount: 49},
+            basic: {credits: 50, amount: 7},
+            pro: {credits: 50, amount: 7},
+            enterprise: {credits: 250, amount: 25},
         }
 
         const userId = req.userId;
-        const {planId} = req.body as {planId: keyof typeof plans}
+        let {planId} = req.body as {planId: keyof typeof plans}
         const origin = req.headers.origin as string;
-
+        if(planId === 'basic'){
+            planId = 'pro';
+        }
         const plan: Plan = plans[planId]
 
         if(!plan){
-            return res.status(404).json({ message: 'Plan not found' });
+            return res.status(404).json({ message: 'Plan not found!' });
         }
 
         const transaction = await prisma.transaction.create({
             data: {
                 userId: userId!,
-                planId: req.body.planId,
+                planId: planId,
                 amount: plan.amount,
                 credits: plan.credits
             }
