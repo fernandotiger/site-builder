@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom"
 import { AuthView } from "@daveyplate/better-auth-ui"
 
 export default function AuthPage() {
-  const { pathname } = useParams()
+  const { pathname } = useParams();
 
   return (
     <main className="p-6 flex flex-col justify-center items-center h-[80vh]">

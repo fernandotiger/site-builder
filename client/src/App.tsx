@@ -12,6 +12,8 @@ import { Toaster } from 'sonner'
 import AuthPage from './pages/auth/AuthPage'
 import Settings from './pages/Settings'
 import Loading from './pages/Loading'
+import VerifyEmailNotice from './pages/VerifyEmailNotice'
+import VerifyEmail from './pages/VerifyEmail'
 
 const App = () => {
 
@@ -38,6 +40,8 @@ const App = () => {
         <Route path="/auth/:pathname" element={<AuthPage />} />
         <Route path="/account/settings" element={<Settings />} />
         <Route path='/loading' element={<Loading />}/>
+        <Route path='/verify-email-notice' element={<VerifyEmailNotice />}/>
+        <Route path='/verify-email' element={<VerifyEmail />}/>
       </Routes>
     </div>
   )

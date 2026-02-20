@@ -198,7 +198,7 @@ export const getUserProject = async (req: Request, res: Response) => {
         const {projectId} = req.params;
 
        const project = await prisma.websiteProject.findUnique({
-        where: {id: projectId, userId},
+        where: {id: projectId  as string, userId},
         include: {
             conversation: {
                 orderBy: {timestamp: 'asc'}
@@ -246,8 +246,12 @@ export const togglePublish = async (req: Request, res: Response) => {
 
         const {projectId} = req.params;
 
+        if(!projectId){
+            return res.status(400).json({ message: 'Project ID is required' });
+        }
+
         const project = await prisma.websiteProject.findUnique({
-            where: {id: projectId, userId}
+            where: {id: projectId as string, userId}
         })
 
         if(!project){
@@ -255,7 +259,7 @@ export const togglePublish = async (req: Request, res: Response) => {
         }
 
         await prisma.websiteProject.update({
-            where: {id: projectId},
+            where: {id: projectId  as string},
             data: {isPublished: !project.isPublished}
         })
        
@@ -393,7 +397,13 @@ Include these sections in order, adapting based on user input:
    - Visual timeline or numbered steps
    - Clear, concise explanations
 
-4. **Social Proof Section**
+4. **More Features/Benefits Section**
+   - 3-6 key benefits over the possible pain points of the target audience
+   - Icons for each feature
+   - Brief descriptions
+   - Use cards or grid layout with animations on scroll
+
+5. **Social Proof Section**
    - Customer testimonials (3-6 testimonials)
    - Include names, roles, and photos (use placeholder images from https://ui-avatars.com/api/)
    - **CRITICAL: Ensure testimonial cards have visible background colors or borders**
@@ -401,23 +411,29 @@ Include these sections in order, adapting based on user input:
    - Add proper padding and shadows to make testimonials stand out
    - Optional: Star ratings, statistics, or case studies
 
-5. **Pricing Section** (if applicable)
+6. **Pricing Section** (if applicable)
    - Clear pricing tiers (typically 3 options)
    - Feature comparisons
    - Highlighted "popular" or "recommended" option
    - CTA buttons for each tier (using the CTA URL)
 
-6. **FAQ Section**
+7. **FAQ Section**
    - 5-8 common questions and answers
    - Accordion-style expandable items using Flowbite
    - Address objections and concerns
 
-7. **Final CTA Section**
+8. **Even more Features/Benefits Section**
+   - 3-6 key benefits over the possible pain points of the target audience
+   - Icons for each feature
+   - Brief descriptions
+   - Use cards or grid layout with animations on scroll
+
+9. **Final CTA Section**
    - Recap of main value proposition
    - Strong, action-oriented CTA (using the CTA URL)
    - Reduce friction (e.g., "No credit card required", "Free trial")
 
-8. **Footer**
+10. **Footer**
    - Company name and brief tagline
    - Social media icons ONLY for: Facebook, Instagram, TikTok, YouTube
    - Use Lucide icons for social media with proper styling
