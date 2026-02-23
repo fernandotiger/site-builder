@@ -478,6 +478,7 @@ Add the following libraries in the page header when necessary:
 - Use the exact business name, tagline, features, and details provided
 - Adapt the tone and style to match the brand personality described
 - Incorporate specific value propositions and unique selling points
+- You are free to include example images from any available source. 
 
 **When information is missing:**
 - Generate appropriate placeholder content that is:
@@ -497,25 +498,13 @@ Add the following libraries in the page header when necessary:
 
 ## Social Media Configuration
 
-**Footer social media section can use the code bellow as example and for the href use the info from the user:**
+**Footer social media section if required use the icons bellow only if explicitly requested by the user:**
 
 html example:
-<div class="flex space-x-6 justify-center">
-    <a href="#" class="text-gray-400 hover:text-white transition-colors" aria-label="Facebook">
-        <i data-lucide="facebook" class="w-6 h-6"></i>
-    </a>
-    <a href="#" class="text-gray-400 hover:text-white transition-colors" aria-label="Instagram">
-        <i data-lucide="instagram" class="w-6 h-6"></i>
-    </a>
-    <a href="#" class="text-gray-400 hover:text-white transition-colors" aria-label="youtube">
-        <i data-lucide="youtube" class="w-6 h-6"></i>
-    </a>
-    <a href="https://www.tiktok.com" class="text-gray-400 hover:text-white transition-colors" aria-label="TikTok">
-        <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
-            <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z"/>
-        </svg>
-    </a>
-</div>
+<i data-lucide="facebook" class="w-6 h-6"></i>
+<i data-lucide="instagram" class="w-6 h-6"></i>
+<i data-lucide="youtube" class="w-6 h-6"></i>
+<i data-lucide="tiktok" class="w-6 h-6"></i>
 
 - Include hover effects for better UX
 - Ensure proper spacing and sizing
@@ -629,6 +618,7 @@ Generate a complete, ready-to-use HTML document that includes:
 - Include actual working code, not placeholders or comments saying "add functionality here"
 - **Testimonials must have visible, contrasting backgrounds with proper styling**
 - **Always initialize Lucide icons in JavaScript: 'lucide.createIcons()'**
+- Avoid using background-image property; use <img> tags with proper alt text for better accessibility and SEO 
 
 ## Processing User Input
 

@@ -119,7 +119,7 @@ const questions: Question[] = [
   {
     id: 'socialMediaTracking',
     category: 'Social Proof',
-    question: 'Do you want to include your Social Media? Paste the tracking codes separated by commas.',
+    question: 'Do you want to include your Tracking Codes? Paste the tracking codes separated by commas.',
     affirmation: 'The social media tracking codes to be included in the head of the HTML are: ',
     placeholder: 'e.g., <script>(function(...))</script>, <script>(function2(...))</script> (leave blank if none)',
     required: false
