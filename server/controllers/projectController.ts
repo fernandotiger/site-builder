@@ -30,7 +30,7 @@ export const makeRevision = async (req: Request, res: Response) => {
         }
 
         const currentProject = await prisma.websiteProject.findUnique({
-            where: {id: projectId, userId},
+            where: {id: projectId as string, userId},
             include: {versions: true}
         })
 
@@ -42,7 +42,7 @@ export const makeRevision = async (req: Request, res: Response) => {
             data: {
                 role: 'user',
                 content: message,
-                projectId
+                projectId: projectId as string
             }
         })
 
@@ -50,8 +50,8 @@ export const makeRevision = async (req: Request, res: Response) => {
             where: {id: userId},
             data: {credits: {decrement: 3}}
         })
-
-        // Enhance user prompt
+console.log('modelName:', modelName);
+ /*       // Enhance user prompt
         const promptEnhanceResponse = await openai.chat.completions.create({
             model: modelName,
             messages: [
@@ -65,6 +65,7 @@ export const makeRevision = async (req: Request, res: Response) => {
                     2. Mentioning design details (colors, spacing, sizes)
                     3. Clarifying the desired outcome
                     4. Using clear technical terms
+                    5. If the problem is involving images not appearing, then replace it creating a minimalist SVG image according to the context of the section.
 
                     Return ONLY the enhanced request, nothing else. Keep it concise (1-2 sentences).`
                 },
@@ -74,27 +75,34 @@ export const makeRevision = async (req: Request, res: Response) => {
                 }
             ]
         })
-
-        const enhancedPrompt = promptEnhanceResponse.choices[0].message.content;
-
-        await prisma.conversation.create({
+*/
+        const enhancedPrompt = message; //promptEnhanceResponse.choices[0].message.content;
+console.log('XXXXXXXXXXXXXXXXXXX');
+    /*    await prisma.conversation.create({
             data: {
                 role: 'assistant',
                 content: `I've enhanced your prompt to: "${enhancedPrompt}"`,
-                projectId
+                projectId: projectId as string
             }
-        })
+        })*/
         await prisma.conversation.create({
             data: {
                 role: 'assistant',
                 content: 'Now making changes to your website...',
-                projectId
+                projectId: projectId as string
             }
         })
-
+console.log('sending to openai');
         // Generate website code
         const codeGenerationResponse = await openai.chat.completions.create({
-            model: modelNameRevision,
+            model: modelNameRevision, 
+            // @ts-ignore or cast as any
+            ...({
+                provider: {
+                order: ["parasail", "together", "novita"],
+                allow_fallbacks: false
+                }
+            } as any),
             messages: [
                 {
                     role: 'system',
@@ -103,13 +111,11 @@ export const makeRevision = async (req: Request, res: Response) => {
 
                     CRITICAL REQUIREMENTS:
                     - Return ONLY the complete updated HTML code with the requested changes.
-                    - Use Tailwind CSS for ALL styling (NO custom CSS).
-                    - Use Tailwind utility classes for all styling changes.
-                    - Include all JavaScript in <script> tags before closing </body>
-                    - Make sure it's a complete, standalone HTML document with Tailwind CSS
+                    - If necessary by the new changes include all the newJavaScript in <script> tags before closing </body>
+                    - If the problem is involving images not appearing, then replace it creating a minimalist SVG banner image with some different shapes and colors.
                     - Return the HTML Code Only, nothing else
 
-                    Apply the requested changes while maintaining the Tailwind CSS styling approach.`
+                    Apply the requested changes while maintaining all the styling and structure of the original code.`
                 },
                 {
                     role: 'user',
@@ -118,15 +124,20 @@ export const makeRevision = async (req: Request, res: Response) => {
                 }
             ]
         })
-
+console.log('Fim openai: ', codeGenerationResponse);
+console.log('Fim 2 openai: ', codeGenerationResponse.choices);
+        if(codeGenerationResponse.choices == undefined || codeGenerationResponse.choices.length === 0){
+            console.log('Revision Provider error: ', codeGenerationResponse);
+            throw new Error('No response from AI model for code generation');
+        }
         const code = codeGenerationResponse.choices[0].message.content || '';
-
+console.log('111111');
         if(!code){
              await prisma.conversation.create({
                 data: {
                     role: 'assistant',
                     content: "Unable to generate the code, please try again",
-                    projectId
+                    projectId: projectId as string
                 }
             })
             await prisma.user.update({
@@ -135,27 +146,27 @@ export const makeRevision = async (req: Request, res: Response) => {
             })
             return;
         }
-
+console.log('222222');
         const version = await prisma.version.create({
             data: {
                 code: code.replace(/```[a-z]*\n?/gi, '')
                 .replace(/```$/g, '')
                 .trim(),
                 description: 'changes made',
-                projectId
+                projectId: projectId as string
             }
         })
-
+console.log('33333333');
         await prisma.conversation.create({
             data: {
                 role: 'assistant',
                 content: "I've made the changes to your website! You can now preview it",
-                projectId
+                projectId: projectId as string
             }
         })
-
+console.log('4444444');
         await prisma.websiteProject.update({
-            where: {id: projectId},
+            where: {id: projectId as string},
             data: {
                 current_code: code.replace(/```[a-z]*\n?/gi, '')
                 .replace(/```$/g, '')
@@ -163,7 +174,7 @@ export const makeRevision = async (req: Request, res: Response) => {
                 current_version_index: version.id
             }
         })
-        
+        console.log('Changes made successfully');
 
         res.json({message: 'Changes made successfully'})
     } catch (error : any) {
@@ -186,7 +197,7 @@ export const rollbackToVersion = async (req: Request, res: Response) => {
         const { projectId, versionId } = req.params;
 
         const project = await prisma.websiteProject.findUnique({
-            where: {id: projectId, userId},
+            where: {id: projectId as string, userId},
             include: {versions: true}
         })
 
@@ -201,7 +212,7 @@ export const rollbackToVersion = async (req: Request, res: Response) => {
         }
 
         await prisma.websiteProject.update({
-            where: {id: projectId, userId},
+            where: {id: projectId as string, userId},
             data: {
                 current_code: version.code,
                 current_version_index: version.id
@@ -212,7 +223,7 @@ export const rollbackToVersion = async (req: Request, res: Response) => {
             data: {
                 role: 'assistant',
                 content: "I've rolled back your website to selected version. You can now preview it",
-                projectId
+                projectId: projectId as string 
             }
         })
 
@@ -230,7 +241,7 @@ export const deleteProject = async (req: Request, res: Response) => {
         const { projectId } = req.params;
 
         await prisma.websiteProject.delete({
-            where: {id: projectId, userId},
+            where: {id: projectId as string, userId},
         })
 
         res.json({ message: 'Project deleted successfully' });
@@ -251,7 +262,7 @@ export const getProjectPreview = async (req: Request, res: Response) => {
         }
 
         const project = await prisma.websiteProject.findFirst({
-            where: {id: projectId, userId},
+            where: {id: projectId as string, userId},
             include: {versions: true}
         })
 
@@ -288,7 +299,7 @@ export const getProjectById = async (req: Request, res: Response) => {
        const { projectId } = req.params;
 
         const project = await prisma.websiteProject.findFirst({
-            where: {id: projectId},
+            where: {id: projectId as string},
         })
 
         if(!project || project.isPublished === false || !project?.current_code){
@@ -319,7 +330,7 @@ export const saveProjectCode = async (req: Request, res: Response) => {
         }
 
         const project = await prisma.websiteProject.findUnique({
-            where: {id: projectId, userId}
+            where: {id: projectId as string, userId}
         })
 
         if(!project){
@@ -327,7 +338,7 @@ export const saveProjectCode = async (req: Request, res: Response) => {
         }
 
         await prisma.websiteProject.update({
-            where: {id: projectId},
+            where: {id: projectId as string},
             data: {current_code: code, current_version_index: '', custom_domain: customDomain}
         })
 

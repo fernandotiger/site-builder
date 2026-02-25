@@ -56,14 +56,14 @@ export async function deployProject(
   if (!custom_domain?.trim()) {
     return {
       success: false,
-      message: "Project has no custom_domain configured. Ask the user to set one first.",
+      message: "Project has no Custom Domain configured. To make it professional you need to set up one.",
     };
   }
 
   if (!current_code?.trim()) {
     return {
       success: false,
-      message: "Project has no HTML content (current_code is empty). Publish the page first.",
+      message: "Project has no HTML content (current code is empty). Publish the page first.",
     };
   }
 
