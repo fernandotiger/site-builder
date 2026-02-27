@@ -164,7 +164,7 @@ const Projects = () => {
             <button 
               onClick={saveProject} 
               disabled={isSaving} 
-              className='hidden sm:flex bg-gray-800 hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed text-white px-3.5 py-2 items-center justify-center gap-2 rounded transition-colors border border-gray-700 whitespace-nowrap'
+              className='flex bg-gray-800 hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed text-white px-3.5 py-2 items-center justify-center gap-2 rounded transition-colors border border-gray-700 whitespace-nowrap'
               aria-label="Save project"
             >
               {isSaving ? <Loader2Icon className="animate-spin" size={16}/> : <SaveIcon size={16}/>} 
