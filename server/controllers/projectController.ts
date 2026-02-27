@@ -48,9 +48,9 @@ export const makeRevision = async (req: Request, res: Response) => {
 
         await prisma.user.update({
             where: {id: userId},
-            data: {credits: {decrement: 3}}
+            data: {credits: {decrement: 5}}
         })
-console.log('modelName:', modelName);
+
  /*       // Enhance user prompt
         const promptEnhanceResponse = await openai.chat.completions.create({
             model: modelName,
@@ -77,7 +77,7 @@ console.log('modelName:', modelName);
         })
 */
         const enhancedPrompt = message; //promptEnhanceResponse.choices[0].message.content;
-console.log('XXXXXXXXXXXXXXXXXXX');
+
     /*    await prisma.conversation.create({
             data: {
                 role: 'assistant',
@@ -92,7 +92,7 @@ console.log('XXXXXXXXXXXXXXXXXXX');
                 projectId: projectId as string
             }
         })
-console.log('sending to openai');
+
         // Generate website code
         const codeGenerationResponse = await openai.chat.completions.create({
             model: modelNameRevision, 
@@ -112,7 +112,7 @@ console.log('sending to openai');
                     CRITICAL REQUIREMENTS:
                     - Return ONLY the complete updated HTML code with the requested changes.
                     - If necessary by the new changes include all the newJavaScript in <script> tags before closing </body>
-                    - If the problem is involving images not appearing, then replace it creating a minimalist SVG banner image with some different shapes and colors.
+                    - If the problem is involving images not appearing, then replace it using placeholder https://www.cibaky.com/wp-content/uploads/2015/12/placeholder-3.jpg.
                     - Return the HTML Code Only, nothing else
 
                     Apply the requested changes while maintaining all the styling and structure of the original code.`
@@ -124,14 +124,13 @@ console.log('sending to openai');
                 }
             ]
         })
-console.log('Fim openai: ', codeGenerationResponse);
-console.log('Fim 2 openai: ', codeGenerationResponse.choices);
+
         if(codeGenerationResponse.choices == undefined || codeGenerationResponse.choices.length === 0){
             console.log('Revision Provider error: ', codeGenerationResponse);
             throw new Error('No response from AI model for code generation');
         }
         const code = codeGenerationResponse.choices[0].message.content || '';
-console.log('111111');
+
         if(!code){
              await prisma.conversation.create({
                 data: {
@@ -142,11 +141,11 @@ console.log('111111');
             })
             await prisma.user.update({
                 where: {id: userId},
-                data: {credits: {increment: 3}}
+                data: {credits: {increment: 5}}
             })
             return;
         }
-console.log('222222');
+
         const version = await prisma.version.create({
             data: {
                 code: code.replace(/```[a-z]*\n?/gi, '')
@@ -156,7 +155,7 @@ console.log('222222');
                 projectId: projectId as string
             }
         })
-console.log('33333333');
+
         await prisma.conversation.create({
             data: {
                 role: 'assistant',
@@ -164,7 +163,7 @@ console.log('33333333');
                 projectId: projectId as string
             }
         })
-console.log('4444444');
+
         await prisma.websiteProject.update({
             where: {id: projectId as string},
             data: {

@@ -25,6 +25,9 @@ const Pricing = () => {
                 if(planId === "basic") return toast('Please sign up to get started');
                 return toast('Please login to purchase credits');
             }
+            if(planId === "basic") {
+                return toast('You already have the Basic plan');
+            }
             const {data} = await api.post('/api/user/purchase-credits', {planId});
             window.location.href = data.payment_link;
         } catch (error: any) {
@@ -70,7 +73,7 @@ const Pricing = () => {
                         ))}
                     </div>
                 </div>
-                <p className='mx-auto text-center text-sm max-w-md mt-10 text-white/60 font-light'>Project <span className='text-white'> Creation </span> consume <span className='text-white'>5 credits </span>. <span className='text-white'>Revision</span> consume <span className='text-white'>3 credits </span>. You can purchase more credits to create more projects.</p>
+                <p className='mx-auto text-center text-sm max-w-md mt-10 text-white/60 font-light'>Project <span className='text-white'> Creation and Revision</span> consume <span className='text-white'>5 credits </span>. You can purchase more credits to create more projects.</p>
       </div>
       <Footer />
     </>

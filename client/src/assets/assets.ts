@@ -11,7 +11,7 @@ export const appPlans = [
             price: '$0',
             credits: 10,
             description: 'Start Now, scale up as you grow.',
-            features: ['Up to 1 Creation', 'Limited Revisions', 'Basic AI Models', 'Email support', 'Tutorial',],
+            features: ['Up to 1 Landing Page', 'Limited Revisions', 'Basic AI Models', 'Email support', 'Tutorial',],
         },
         {
             id: 'pro',
@@ -19,7 +19,7 @@ export const appPlans = [
             price: '€7',
             credits: 50,
             description: 'Add credits to create more projects',
-            features: ['Up to 10 Creations', 'Custom Domain', 'Advanced AI Models', 'Extended Revisions', 'Page Element Edition', 'Landing Page Hosting', 'Priority email support', 'Tutorial',],
+            features: ['Up to 4 Landing Pages', 'Custom Domain', 'Advanced AI Models', 'Extended Revisions', 'Page Element Edition', 'Landing Page Hosting', 'Priority email support', 'Tutorial',],
         },
         {
             id: 'enterprise',
@@ -27,7 +27,7 @@ export const appPlans = [
             price: '€25',
             credits: 250,
             description: 'Add credits to create more projects',
-            features: ['Up to 50 Creations', 'Custom Domain', 'Advanced AI Models', 'Increased Revisions', 'Page Element Edition', 'Landing Page Hosting', 'Priority email + chat support', 'Tutorial',],
+            features: ['Up to 15 Landing Pages', 'Custom Domain', 'Advanced AI Models', 'Increased Revisions', 'Page Element Edition', 'Landing Page Hosting', 'Priority email + chat support', 'Tutorial',],
         }
     ]
 

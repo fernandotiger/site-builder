@@ -23,10 +23,35 @@ export const getUserCredits = async (req: Request, res: Response) => {
     }
 }
 
+// Get User Plan
+export const getUserPlan= async (req: Request, res: Response) => {
+    try {
+        const userId = req.userId;
+        if(!userId){
+            return res.status(401).json({ message: 'Unauthorized' });
+        }
+
+        const plan = await prisma.transaction.findFirst({
+            where: {userId: userId as string},
+            orderBy: {createdAt: 'asc'}
+        })
+        if(!plan){
+            res.json({isPaid: false, name: 'Basic Plan', price: 0})
+        }else{
+            res.json({isPaid: plan?.isPaid, name: (plan?.planId === 'pro' ? 'Pro Plan' : plan?.planId === 'enterprise' ? 'Enterprise Plan' : 'Basic Plan'), price: plan?.amount})
+        }
+    } catch (error : any) {
+        console.log(error.code || error.message);
+        res.status(500).json({ message: error.message });
+    }
+}
+
 // Controller Function to create New Project
 export const createUserProject = async (req: Request, res: Response) => {
     const userId = req.userId;
     const modelName = await getAiModelNameForUser(userId as string);
+    const userPlan = await getUserPlan({userId} as any, {} as any);
+    
     try {
         const { initial_prompt } = req.body;
 
@@ -39,7 +64,11 @@ export const createUserProject = async (req: Request, res: Response) => {
         })
 
         if(user && user.credits < 5){
-            return res.status(403).json({ message: 'add credits to create more projects' });
+            return res.status(403).json({ message: 'Add credits to create more projects' });
+        }
+
+        if(canCreateNewProject(user, userPlan) === false){
+            return res.status(403).json({ message: 'Maximum number of projects reached for your plan' });
         }
 
         // Create a new project
@@ -663,3 +692,21 @@ When you receive the user information:
 Generate a landing page that is not just functional, but exceptional - one that would genuinely convert visitors into customers.
 - Return the HTML Code Only, nothing else
 `;
+
+
+function canCreateNewProject(user: any, userPlan: any) {
+    if (!user) return true;
+    
+    const projectLimits: { [key: string]: number } = {
+        'basic': 1,
+        'pro': 4,
+        'enterprise': 15
+    };
+    
+    const planName = userPlan?.json?.name || 'basic';
+    const maxProjects = projectLimits[planName] || 1;
+    
+    return user.totalCreation <= maxProjects;
+}
+
+
