@@ -16,7 +16,34 @@ export const auth = betterAuth({
         sendEmailVerificationOnSignUp: true
     },
     user: {
-      deleteUser: {enabled: true}
+      deleteUser: {
+        enabled: true,
+        beforeDelete: async (user) => {
+          // Fetch full user data with all relations
+          const fullUser = await prisma.user.findUnique({
+            where: { id: user.id },
+            include: {
+              projects: {
+                include: {
+                  conversation: true,
+                }
+              },
+              transactions: true,
+            }
+          });
+
+          // Save snapshot before deletion
+          await prisma.deletedUser.create({
+            data: {
+              originalId: user.id,
+              email: user.email,
+              snapshot: fullUser as object,
+            }
+          });
+
+      // Cascades handle the actual cleanup (no manual deletes needed)
+    }
+      }
     },
     trustedOrigins,
     baseURL: process.env.BETTER_AUTH_URL!,

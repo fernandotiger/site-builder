@@ -140,4 +140,12 @@ model Verification {
   @@map("verification")
 }
 
+model DeletedUser {
+  id          String   @id @default(cuid())
+  originalId  String   // the original user id
+  email       String
+  snapshot    Json     // full data dump
+  deletedAt   DateTime @default(now())
+}
+
 

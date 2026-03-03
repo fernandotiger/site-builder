@@ -120,7 +120,7 @@ export async function deployProject(
  */
 export async function undeployProject(
   projectId:   string, userId: string, 
-  deleteFiles = false
+  deleteFiles = true
 ): Promise<ServiceDeployResult> {
 
   const project = await prisma.websiteProject.findFirst({

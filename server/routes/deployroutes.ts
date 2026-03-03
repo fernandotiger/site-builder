@@ -47,7 +47,7 @@ deployRouter.post("/add", protect, async (req: Request, res: Response): Promise<
  * }
  */
 deployRouter.delete("/delete", protect, async (req: Request, res: Response): Promise<void> => {
-  const { projectId, deleteFiles = false } =
+  const { projectId, deleteFiles = true } =
     req.body as { projectId?: string; deleteFiles?: boolean };
 
   const userId = req.userId;
