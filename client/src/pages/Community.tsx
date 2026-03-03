@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import type { Project } from '../types';
 import { Loader2Icon, PlusIcon, TrashIcon } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -8,23 +8,58 @@ import { toast } from 'sonner';
 
 const Community = () => {
     const [loading, setLoading] = useState(true);
-    const [projects, setProjects] = useState<Project[]>([])
-    const navigate = useNavigate()
+    const [loadingMore, setLoadingMore] = useState(false);
+    const [projects, setProjects] = useState<Project[]>([]);
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
+    const navigate = useNavigate();
 
-    const fetchProjects = async () => {
+    // Ref attached to a sentinel div at the bottom of the list
+    const sentinelRef = useRef<HTMLDivElement | null>(null);
+
+    const fetchProjects = async (pageToLoad: number) => {
        try {
-        const { data } = await api.get('/api/project/published');
-        setProjects(data.projects);
-        setLoading(false);
+            pageToLoad === 1 ? setLoading(true) : setLoadingMore(true);
+            const { data } = await api.get('/api/project/published', {
+                params: { page: pageToLoad, limit: 15 },
+            });
+
+            setProjects(prev => 
+                pageToLoad === 1 ? data.projects : [...prev, ...data.projects]
+            );
+            setHasMore(data.pagination.hasMore);
+            setPage(pageToLoad);
        } catch (error: any) {
-        console.log(error);
-        toast.error(error?.response?.data?.message || error.message);
+            console.log(error);
+            toast.error(error?.response?.data?.message || error.message);
+       } finally {
+            setLoading(false);
+            setLoadingMore(false);
        }
     }
 
     useEffect(()=>{
-        fetchProjects()
-    },[])
+        fetchProjects(1);
+    }, []);
+
+    // IntersectionObserver watches the sentinel div
+    useEffect(() => {
+        if (!sentinelRef.current) return;
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                const first = entries[0];
+                if (first.isIntersecting && hasMore && !loadingMore && !loading) {
+                    fetchProjects(page + 1);
+                }
+            },
+            { threshold: 0.1 }
+        );
+
+        observer.observe(sentinelRef.current);
+        return () => observer.disconnect();
+    }, [hasMore, loadingMore, loading, page]); // re-subscribe when these change
+
   return (
     <>
       <div className='px-4 md:px-16 lg:px-24 xl:px-32'>
@@ -83,7 +118,22 @@ const Community = () => {
                         </Link>
                     ))}
                 </div>
-                
+                {/* Sentinel: triggers next page load when visible */}
+                        <div ref={sentinelRef} className='h-10 mt-6' />
+
+                        {/* Subtle spinner while loading more */}
+                        {loadingMore && (
+                            <div className='flex justify-center py-6'>
+                                <Loader2Icon className='size-6 animate-spin text-indigo-400' />
+                            </div>
+                        )}
+
+                        {/* End of results message */}
+                        {!hasMore && (
+                            <p className='text-center text-gray-600 text-sm py-6'>
+                                You've reached the end
+                            </p>
+                        )}
             </div>
         ) : (
             <div className='flex flex-col items-center justify-center h-[80vh]'>

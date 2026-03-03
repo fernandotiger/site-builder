@@ -23,24 +23,32 @@ export const getUserCredits = async (req: Request, res: Response) => {
     }
 }
 
+export const getPlanData = async (userId: string) => {
+    const plan = await prisma.transaction.findFirst({
+        where: { userId: userId },
+        orderBy: { createdAt: 'asc' }
+    });
+
+    if (!plan) {
+        return { isPaid: false, name: 'Basic Plan', price: 0 };
+    }
+
+    return {
+        isPaid: plan.isPaid,
+        name: plan.planId === 'pro' ? 'Pro Plan' : plan.planId === 'enterprise' ? 'Enterprise Plan' : 'Basic Plan',
+        price: plan.amount
+    };
+};
+
 // Get User Plan
 export const getUserPlan= async (req: Request, res: Response) => {
     try {
         const userId = req.userId;
-        if(!userId){
-            return res.status(401).json({ message: 'Unauthorized' });
-        }
+        if (!userId) return res.status(401).json({ message: 'Unauthorized' });
 
-        const plan = await prisma.transaction.findFirst({
-            where: {userId: userId as string},
-            orderBy: {createdAt: 'asc'}
-        })
-        if(!plan){
-            res.json({isPaid: false, name: 'Basic Plan', price: 0})
-        }else{
-            res.json({isPaid: plan?.isPaid, name: (plan?.planId === 'pro' ? 'Pro Plan' : plan?.planId === 'enterprise' ? 'Enterprise Plan' : 'Basic Plan'), price: plan?.amount})
-        }
-    } catch (error : any) {
+        const planData = await getPlanData(userId);
+        return res.json(planData);
+    } catch (error: any) {
         console.log(error.code || error.message);
         res.status(500).json({ message: error.message });
     }
@@ -50,7 +58,7 @@ export const getUserPlan= async (req: Request, res: Response) => {
 export const createUserProject = async (req: Request, res: Response) => {
     const userId = req.userId;
     const modelName = await getAiModelNameForUser(userId as string);
-    const userPlan = await getUserPlan({userId} as any, {} as any);
+    const userPlan = await getPlanData(userId as string);
     
     try {
         const { initial_prompt } = req.body;
@@ -390,6 +398,7 @@ You are an expert landing page designer and developer specializing in creating m
    - Ensure proper spacing, alignment, hierarchy, and theme consistency.  
    - Ensure charts are visually appealing and match the theme color. 
    - Do not add any extra text before or after the HTML code. 
+   - Always add some simpleanimations and interactions to the page.
 
     1.1. **Design Style List**
     - Neobrutalist (raw, bold, confrontational with structured impact)
@@ -674,6 +683,7 @@ Generate a complete, ready-to-use HTML document that includes:
 - Balance beauty with functionality - never sacrifice usability for aesthetics
 - Include actual working code, not placeholders or comments saying "add functionality here"
 - **Testimonials must have visible, contrasting backgrounds with proper styling**
+- **Texts and Backgrounds must be contrasting with proper styling to make texts always visible**
 - **Always initialize Lucide icons in JavaScript: 'lucide.createIcons()'**
 - Avoid using background-image property; use <img> tags with proper alt text for better accessibility and SEO 
 
@@ -698,8 +708,8 @@ function canCreateNewProject(user: any, userPlan: any) {
     if (!user) return true;
     
     const projectLimits: { [key: string]: number } = {
-        'basic': 1,
-        'pro': 4,
+        'basic': 51,
+        'pro': 54,
         'enterprise': 15
     };
     

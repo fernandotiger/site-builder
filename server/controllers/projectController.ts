@@ -279,13 +279,36 @@ export const getProjectPreview = async (req: Request, res: Response) => {
 // Get published projects
 export const getPublishedProjects = async (req: Request, res: Response) => {
     try {
+        const page = parseInt(req.query.page as string) || 1;
+        const limit = parseInt(req.query.limit as string) || 15;
+        const skip = (page - 1) * limit;
        
-        const projects = await prisma.websiteProject.findMany({
+        const [projects, total] = await prisma.$transaction([
+            prisma.websiteProject.findMany({
+                where: { isPublished: true },
+                include: { user: true },
+                skip,
+                take: limit,
+                orderBy: { createdAt: 'desc' },
+            }),
+            prisma.websiteProject.count({
+                where: { isPublished: true },
+            }),
+        ]);
+        res.json({
+            projects,
+            pagination: {
+                total,
+                page,
+                limit,
+                hasMore: skip + projects.length < total,
+            },
+        });
+        /*const projects = await prisma.websiteProject.findMany({
             where: {isPublished: true},
             include: {user: true}
         })
-
-        res.json({ projects });
+        res.json({ projects });*/
     } catch (error : any) {
         console.log(error.code || error.message);
         res.status(500).json({ message: error.message });
