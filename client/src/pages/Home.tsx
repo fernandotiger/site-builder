@@ -285,7 +285,7 @@ const Home = () => {
                 {currentQuestion.category}
               </span>
               <span className="text-sm text-gray-400">
-                {currentQuestionIndex + 1} of {questions.length}
+                {Math.round(((currentQuestionIndex + 1) / questions.length) * 100)}%
               </span>
             </div>
             <div className="h-2 bg-white/10 rounded-full overflow-hidden backdrop-blur-sm">
