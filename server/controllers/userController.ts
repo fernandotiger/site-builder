@@ -148,10 +148,18 @@ export const createUserProject = async (req: Request, res: Response) => {
         await prisma.conversation.create({
             data: {
                 role: 'assistant',
-                content: 'now generating your website...',
+                content: 'now generating your website... Please wait, this can take up to 5 minutes.',
                 projectId: project.id
             }
-        })
+        });
+
+        await prisma.conversation.create({
+            data: {
+                role: 'assistant',
+                content: 'You can ask me questions about the functionalities of Pagening without reducing your credits. When you need to alter things in your Landing Page please be specific, like "The testemonial\'s section is not working. fix it".',
+                projectId: project.id
+            }
+        });
 
         // Generate website code
         const codeGenerationResponse = await openai.chat.completions.create({
@@ -392,7 +400,7 @@ You are an expert landing page designer and developer specializing in creating m
    - Add gradient styling in style css not in tailwindcss
    - Use placeholders for all images:  
        - Light mode: https://community.softr.io/uploads/db9110/original/2X/7/74e6e7e382d0ff5d7773ca9a87e6f6f8817a68a6.jpeg  
-       - Dark mode: https://www.cibaky.com/wp-content/uploads/2015/12/placeholder-3.jpg  
+       - Dark mode: https://placehold.co/600x400  
        - Add alt tag describing the image prompt. 
    - Include interactive components like modals, dropdowns, and accordions.  
    - Ensure proper spacing, alignment, hierarchy, and theme consistency.  

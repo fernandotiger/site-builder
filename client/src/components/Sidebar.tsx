@@ -54,11 +54,14 @@ const Sidebar = ({isMenuOpen, project, setProject, isGenerating, setIsGenerating
             interval = setInterval(()=>{
                 fetchProject();
             },10000)
-            const {data} = await api.post(`/api/project/revision/${project.id}`, {message: input})
+            const {data} = await api.post(`/api/project/revision/${project.id}`, {message: input});
+            
             fetchProject();
-            toast.success(data.message)
+            if(!data.isQuestion){
+                toast.success(data.message);
+            }
             setInput('')
-            clearInterval(interval)
+            clearInterval(interval);
             setIsGenerating(false);
         } catch (error: any) {
             setIsGenerating(false);
