@@ -26,3 +26,37 @@ export async function sendVerificationEmail(to: string, verificationUrl: string)
   };
   await transporter.sendMail(mailOptions);
 }
+
+export async function sendProjectCompletedEmail(
+  to: string,
+  projectName: string,
+  projectUrl: string
+): Promise<void> {
+  if(!to || to.trim().length === 0){
+    console.warn("No email provided for sending project completion email.");
+    return;
+  }
+  await transporter.sendMail({
+    from: process.env.EMAIL_FROM,
+    to,
+    subject: `Your Landing Page "${projectName}" is ready!`,
+    text: `Great news! Your Landing Page "${projectName}" has been generated.\n\nView it here: ${projectUrl}`,
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 480px; margin: auto; padding: 32px;">
+        <h2 style="color: #1e40af;">Your Landing Page is ready! 🎉</h2>
+        <p style="color: #334155; font-size: 15px;">
+          <strong>${projectName}</strong> has been successfully generated.
+        </p>
+        <a href="${projectUrl}"
+           style="display: inline-block; margin-top: 20px; padding: 12px 28px;
+                  background: #1e40af; color: #fff; border-radius: 6px;
+                  text-decoration: none; font-weight: bold; font-size: 15px;">
+          View your Landing Page
+        </a>
+        <p style="margin-top: 24px; font-size: 12px; color: #888;">
+          You're receiving this because you have an account on our platform.
+        </p>
+      </div>
+    `
+  });
+}

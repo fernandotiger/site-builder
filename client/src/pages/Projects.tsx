@@ -87,7 +87,7 @@ const Projects = () => {
       console.log(result);
       setTimeout(() => toast.success(result.data.message), 2000);
     } catch (error: any) {
-      toast.error(error?.response?.data?.message || error.message);
+      setTimeout(() =>toast.error(error?.response?.data?.message || error.message), 2000);
       console.log(error);
     }
   }

@@ -3,6 +3,7 @@ import prisma from '../lib/prisma.js';
 import openai from '../configs/openai.js';
 import Stripe from 'stripe'
 import { getAiModelNameForUser } from '../configs/aiConfigResolver.js';
+import { sendProjectCompletedEmail } from '../lib/mailer.js';
 
 // Get User Credits
 export const getUserCredits = async (req: Request, res: Response) => {
@@ -164,6 +165,13 @@ export const createUserProject = async (req: Request, res: Response) => {
         // Generate website code
         const codeGenerationResponse = await openai.chat.completions.create({
             model: modelName,
+            // @ts-ignore or cast as any
+            ...({
+                provider: {
+                order: ["parasail", "together", "novita"],
+                allow_fallbacks: false
+                }
+            } as any),
             messages: [
                 {
                     role: 'system',
@@ -220,7 +228,18 @@ export const createUserProject = async (req: Request, res: Response) => {
                 .trim(),
                 current_version_index: version.id
             }
-        })
+        });
+
+        try {
+            const user = await prisma.user.findUnique({
+                where: {id: userId}
+            });
+            const projectUrl = `${process.env.FRONTEND_URL}/projects/${project.id}`;
+            await sendProjectCompletedEmail(user?.email as string, project.name, projectUrl);
+        } catch (err) {
+            console.error('Failed to send project completion email:', err);
+        // Don't rethrow — the project completed successfully regardless
+        }
 
     } catch (error : any) {
         await prisma.user.update({
@@ -398,9 +417,9 @@ You are an expert landing page designer and developer specializing in creating m
    - Use whitespace strategically for breathing room and focus
    - Ensure the design feels premium, polished, and professional
    - Add gradient styling in style css not in tailwindcss
-   - Use placeholders for all images:  
-       - Light mode: https://community.softr.io/uploads/db9110/original/2X/7/74e6e7e382d0ff5d7773ca9a87e6f6f8817a68a6.jpeg  
-       - Dark mode: https://placehold.co/600x400  
+   - Use images from loremflickr.com for all images:  
+       - example:https://loremflickr.com/1920/1080/technology,startup?lock=1 
+       - Where the 1920/1080 are the dimenstions, the 'technology,startup' are the tags and the lock=1 is to make sure the same image is generated every time for consistency. You can change the tags and dimensions based on the context of the section.
        - Add alt tag describing the image prompt. 
    - Include interactive components like modals, dropdowns, and accordions.  
    - Ensure proper spacing, alignment, hierarchy, and theme consistency.  
@@ -472,14 +491,15 @@ Include these sections in order, adapting based on user input:
    - Clear, concise explanations
 
 4. **More Features/Benefits Section**
+   - More different features or benefits
    - 3-6 key benefits over the possible pain points of the target audience
    - Icons for each feature
    - Brief descriptions
    - Use cards or grid layout with animations on scroll
 
 5. **Social Proof Section**
-   - Customer testimonials (3-6 testimonials)
-   - Include names, roles, and photos (use placeholder images from https://ui-avatars.com/api/)
+   - Customer testimonials (4-8 testimonials)
+   - Include names, roles, and photos (you can use placeholder images ids from 1 to 60 fromhttps://i.pravatar.cc/600?img=1,2,3 etc.). Note that the photos ids 1, 3, 6, 7, 8, 11, 12, 13, 14, 15, 17, 18, 50 - 60 are male.
    - **CRITICAL: Ensure testimonial cards have visible background colors or borders**
    - Use cards with distinct backgrounds (e.g., white cards on colored background, or colored cards on white background)
    - Add proper padding and shadows to make testimonials stand out
@@ -492,11 +512,12 @@ Include these sections in order, adapting based on user input:
    - CTA buttons for each tier (using the CTA URL)
 
 7. **FAQ Section**
-   - 5-8 common questions and answers
+   - 5-10 common questions and answers
    - Accordion-style expandable items using Flowbite
    - Address objections and concerns
 
-8. **Even more Features/Benefits Section**
+8. **More Features/Benefits Section**
+   - More different features or benefits
    - 3-6 key benefits over the possible pain points of the target audience
    - Icons for each feature
    - Brief descriptions
