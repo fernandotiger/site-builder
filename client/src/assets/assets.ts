@@ -4,6 +4,17 @@ export const assets = {
     logo,
 };
 
+export const addCredits = 
+        {
+            id: 'add',
+            name: 'Add Credits',
+            price: '€7',
+            credits: 50,
+            description: 'Add credits to customize projects.',
+            features: ['Custom Domain', 'Advanced AI Models', 'Extended Revisions', 'Page Element Edition', 'Landing Page Hosting', 'Priority email support', 'Tutorial',],
+        }
+    
+
 export const appPlans = [
         {
             id: 'basic',

@@ -136,17 +136,25 @@ const questions: Question[] = [
   {
     id: 'imagery',
     category: 'Brand Assets',
-    question: 'What imagery or videos do you have available? Paste the links below separated by commas.',
-    affirmation: 'The imagery and videos are: ',
-    placeholder: 'e.g., https://yoursite.com/hero-image.jpg, https://youtube.com/watch?v=... (leave blank if none)',
+    question: 'Paste the links to your images below, separated by commas. Or type how many images you want to upload later.',
+    affirmation: 'Here are the imagery links or how many images will be uploaded later: ',
+    placeholder: 'e.g., https://web.com/hero-img.jpg, https://adc.com/img.jpg... (leave blank if none)',
+    required: false
+  },
+  {
+    id: 'videos',
+    category: 'Brand Assets',
+    question: 'Paste the links to your videos below, separated by commas.',
+    affirmation: 'The links for videos are: ',
+    placeholder: 'e.g., https://youtube.com/watch?v=hg12R, https://youtube.com/watch?v=mn25G... (leave blank if none)',
     required: false
   },
   {
     id: 'screenshots',
     category: 'Brand Assets',
-    question: 'Do you have product/service screenshots links? Paste the links below separated by commas.',
-    affirmation: 'The product/service screenshots are: ',
-    placeholder: 'e.g., https://yoursite.com/screenshot1.png, https://yoursite.com/screenshot2.png (leave blank if none)',
+    question: 'Paste the links to your product/service screenshots below, separated by commas. Or type how many images you want to upload later.',
+    affirmation: 'Here are the product/service screenshots links or how many screenshots will be uploaded later: ',
+    placeholder: 'e.g., https://web.com/screenshot1.png, https://adc.com/screenshot2.png (leave blank if none)',
     required: false
   },
 ];
