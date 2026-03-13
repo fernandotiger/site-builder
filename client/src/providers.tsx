@@ -4,7 +4,7 @@ import { useNavigate, NavLink } from "react-router-dom"
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate()
-  alert('After you register, you will receive a confirmation email. If not, check your Spam Box.');
+  
   return (
       <AuthUIProvider
         authClient={authClient}
