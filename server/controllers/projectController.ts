@@ -109,7 +109,7 @@ export const makeRevision = async (req: Request, res: Response) => {
             // @ts-ignore or cast as any
             ...({
                 provider: {
-                order: ["parasail", "together", "novita"],
+                order: ["parasail", "novita","together" ],
                 allow_fallbacks: false
                 }
             } as any),

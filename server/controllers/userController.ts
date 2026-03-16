@@ -168,7 +168,7 @@ export const createUserProject = async (req: Request, res: Response) => {
             // @ts-ignore or cast as any
             ...({
                 provider: {
-                order: ["parasail", "together", "novita"],
+                order: ["parasail", "novita", "together",],
                 allow_fallbacks: false
                 }
             } as any),
@@ -427,7 +427,7 @@ You are an expert landing page designer and developer specializing in creating m
    - Do not add any extra text before or after the HTML code. 
    - Always add some simpleanimations and interactions to the page.
 
-    1.1. **Design Style List**
+    1.1. **Randomize the Design Style from the list available below:**
     - Neobrutalist (raw, bold, confrontational with structured impact)
     - Swiss/International (grid-based, systematic, ultra-clean typography)
     - Editorial (magazine-inspired, sophisticated typography, article-focused)
@@ -492,7 +492,7 @@ Include these sections in order, adapting based on user input:
 
 4. **More Features/Benefits Section**
    - More different features or benefits
-   - 3-6 key benefits over the possible pain points of the target audience
+   - 3-6 key benefits over the pain points of the target audience
    - Icons for each feature
    - Brief descriptions
    - Use cards or grid layout with animations on scroll
@@ -513,26 +513,39 @@ Include these sections in order, adapting based on user input:
 
 7. **FAQ Section**
    - 5-10 common questions and answers
-   - Accordion-style expandable items using Flowbite
    - Address objections and concerns
+   - Use native HTML <details> and <summary> tags for the FAQ section. Style them with CSS/Tailwind, but keep the functionality native.
 
-8. **More Features/Benefits Section**
-   - More different features or benefits
-   - 3-6 key benefits over the possible pain points of the target audience
-   - Icons for each feature
-   - Brief descriptions
-   - Use cards or grid layout with animations on scroll
+8. **The "Us vs. Them" Comparison Table**
+   - A clean table comparing 5-10 key criteria between the user product and traditional solutions or competitors
+   - Use checkmarks for the user product and "X"s or "Limited" for the competition
+   - Highlight the advantages of the user product clearly
+   - Use the user product name on the header of the column of the checkmarks to reinforce branding
 
-9. **Final CTA Section**
+9. **CTA Section**
    - Recap of main value proposition
    - Strong, action-oriented CTA (using the CTA URL)
    - Reduce friction (e.g., "No credit card required", "Free trial")
 
-10. **Footer**
+10. **The "Risk Reversal" / Guarantee Section**
+    - A bold "Money-Back Guarantee" badge, a "Cancel Anytime" promise, or a specific performance guarantee (e.g., "Increase your speed by 20% if you follow our guidelines").
+
+11. **The "Founders / Behind the Scenes" Section**
+    - A photo of the founder or team and a 2-3 sentence "Why we started this" note. Keep it vulnerable and mission-driven.
+
+12. **The "Alternative Path" (Secondary CTA if informed by the user)**
+    - For users who are not ready to convert, offer a secondary CTA like "Download a free guide", or "See it in action". This should be less prominent than the main CTA but still visually appealing.
+
+13. **Final CTA Section**
+   - Recap of main value proposition
+   - Strong, action-oriented CTA (using the CTA URL)
+   - Reduce friction (e.g., "No credit card required", "Free trial")
+
+14. **Footer**
    - Company name and brief tagline
-   - Social media icons ONLY for: Facebook, Instagram, TikTok, YouTube
+   - Social media icons ONLY if social media links were provided by the user (use Lucide icons with hover effects)
    - Use Lucide icons for social media with proper styling
-   - Simple copyright notice: "© 2024 [Company Name]. All rights reserved."
+   - Simple copyright notice: "© 2026 [Company Name]. All rights reserved."
    - **DO NOT include navigation links, legal links, or other footer links**
    - Keep footer minimal and clean
 
@@ -593,14 +606,9 @@ Add the following libraries in the page header when necessary:
 
 ## Social Media Configuration
 
-**Footer social media section if required use the icons bellow only if explicitly requested by the user:**
+**If social media was informed by the user:**
 
-html example:
-<i data-lucide="facebook" class="w-6 h-6"></i>
-<i data-lucide="instagram" class="w-6 h-6"></i>
-<i data-lucide="youtube" class="w-6 h-6"></i>
-<i data-lucide="tiktok" class="w-6 h-6"></i>
-
+- use data-lucide icons
 - Include hover effects for better UX
 - Ensure proper spacing and sizing
 
@@ -620,9 +628,8 @@ html example:
    - Smooth scroll navigation
    - Hover effects on buttons and cards
    - Animated counters for statistics
-   - Form validation (if forms are included)
    - Working menu toggle for mobile
-   - Parallax effects (if make sense for the design)
+   - Parallax effects 
 
 4. **Accessibility**
    - Semantic HTML structure
@@ -662,7 +669,7 @@ html example:
 - **Hero Section**: Fade-in + slide-up animations, parallax background effects
 - **Features**: Staggered fade-in as user scrolls, icon animations
 - **Stats/Numbers**: Animated counters that trigger on scroll
-- **Testimonials**: Carousel with smooth transitions OR grid with hover effects
+- **Testimonials**: smooth transitions OR grid with hover effects
 - **CTAs**: Subtle pulse or glow effects, hover state transformations
 - **Images**: Zoom effects on hover, parallax scrolling
 
@@ -714,7 +721,9 @@ Generate a complete, ready-to-use HTML document that includes:
 - **Testimonials must have visible, contrasting backgrounds with proper styling**
 - **Texts and Backgrounds must be contrasting with proper styling to make texts always visible**
 - **Always initialize Lucide icons in JavaScript: 'lucide.createIcons()'**
-- Avoid using background-image property; use <img> tags with proper alt text for better accessibility and SEO 
+- Do not use the css property background-image; use <img> tags with proper alt text for better accessibility and SEO
+- Make sure the fade in and fade out effects work with no issues using tailwindcss classes.
+- Do not use the css property opacity.
 
 ## Processing User Input
 
@@ -748,4 +757,59 @@ function canCreateNewProject(user: any, userPlan: any) {
     return user.totalCreation <= maxProjects;
 }
 
-
+/*const Prompt = `{
+  "role": "Expert Landing Page Designer & Full-Stack Developer",
+  "task": "Generate a single-page, high-converting, fully functional HTML landing page based on provided user data.",
+  "output_format": "HTML_ONLY",
+  "design_requirements": {
+    "style_logic": "If style is not specified, randomize from: [Neobrutalist, Swiss, Editorial, Glassmorphism, Retro-futuristic, Bauhaus, Art Deco, Minimal, Flat, Material, Neumorphic, Monochromatic, Scandinavian, Japandi, Dark Mode First, Modernist, Organic/Fluid, Corporate, Tech Forward, Luxury Minimal, Neo-Geo, Kinetic, Gradient Modern, Typography First, Metropolitan].",
+    "visual_standards": [
+      "Modern hierarchy with strategic whitespace",
+      "Gradients defined in <style> block (not Tailwind utility)",
+      "Interactive components: Modals, Accordions (Flowbite), Dropdowns",
+      "Animations: AOS for scroll, GSAP for micro-interactions",
+      "Charts: Visually themed via Chart.js",
+      "Parallax effects for depth (if suitable)"
+    ],
+    "assets": {
+      "images": "https://loremflickr.com/{width}/{height}/{tags with no spaces}?lock={id}",
+      "placeholders": "Use realistic industry-specific copy; avoid 'Lorem Ipsum'",
+      "testimonials": "Use https://i.pravatar.cc/600?img={id}. Male IDs: 1,3,6,7,8,11-15,17,18,50-60."
+    }
+  },
+  "technical_stack": [
+    "Tailwind CSS (CDN)",
+    "Flowbite (CSS/JS)",
+    "Lucide Icons (Must call lucide.createIcons())",
+    "AOS.js (Animate on Scroll)",
+    "GSAP (Advanced motion)",
+    "Swiper.js (Carousels)",
+    "Chart.js (Data viz)"
+  ],
+  "structural_manifest": [
+    { "id": "1", "section": "Sticky Header", "elements": ["Logo", "Smooth-scroll Nav"] },
+    { "id": "2", "section": "Hero", "elements": ["H1 Headline", "Value Prop", "Primary CTA", "Background Visual"] },
+    { "id": "3", "section": "Features_Grid_1", "elements": ["3-6 cards", "Lucide icons", "Staggered AOS animations"] },
+    { "id": "4", "section": "Process_How_It_Works", "elements": ["Visual timeline", "Step-by-step logic"] },
+    { "id": "5", "section": "Features_Grid_2", "elements": ["Pain-point solutions", "Benefit-driven copy"] },
+    { "id": "6", "section": "Social_Proof", "rules": "CRITICAL: Distinct card backgrounds (shadow-lg), visible borders, high text contrast." },
+    { "id": "7", "section": "Pricing", "elements": ["3 tiers", "Highlight 'Popular'", "CTA per tier"] },
+    { "id": "8", "section": "FAQ", "elements": ["Flowbite Accordion", "5-10 questions"] },
+    { "id": "9", "section": "Features_Grid_3", "elements": ["explore more pain-point solutions", "Benefit-driven copy"] },
+    { "id": "10", "section": "Final_CTA", "elements": ["Urgency/Friction reduction", "Final conversion button"] },
+    { "id": "11", "section": "Footer", "rules": "Minimal. If informed by the user, include social media links. No extra links." }
+  ],
+  "critical_constraints": {
+    "cta_logic": "ALL buttons MUST use the User-Provided CTA Link.",
+    "accessibility": "Semantic HTML, ARIA labels, Contrast-compliant colors.",
+    "state_management": "Use JS variables only; NO localStorage/sessionStorage.",
+    "responsiveness": "Mobile-first; breakpoints for 640px and 1024px.",
+    "prohibition": "No conversational filler. Output starts with <!DOCTYPE html> and ends with </html>."
+  },
+  "processing_steps": [
+    "1. Analyze User Input (Business name, industry, CTA link).",
+    "2. Select Design Style & Color Palette (Tech/Finance/Health/Creative/Eco).",
+    "3. Map Content to Structural Manifest.",
+    "4. Generate Code ensuring all scripts and icon initializations are at the end of <body>."
+  ]
+}`;*/
