@@ -137,7 +137,7 @@ const questions: Question[] = [
     id: 'imagery',
     category: 'Brand Assets',
     question: 'Paste the links to your images below, separated by commas. Or type how many images you want to upload later.',
-    affirmation: 'Here are the imagery links or how many images will be uploaded later: ',
+    affirmation: 'Here are the imagery links, handle this image input conditionally: If links are provided, use the links. If a number is provided, use placeholders from https://placehold.co. For example: Input 3 → Output 3 placeholders. Input [url1, url2] → Output those 2 images: ',
     placeholder: 'e.g., https://web.com/hero-img.jpg, https://adc.com/img.jpg... (leave blank if none)',
     required: false
   },
@@ -152,8 +152,8 @@ const questions: Question[] = [
   {
     id: 'screenshots',
     category: 'Brand Assets',
-    question: 'Paste the links to your product/service screenshots below, separated by commas. Or type how many images you want to upload later.',
-    affirmation: 'Here are the product/service screenshots links or how many screenshots will be uploaded later: ',
+    question: 'Paste the links to your product/service screenshots below, separated by commas. Or type how many screenshots you want to upload later.',
+    affirmation: 'Here are the product/service screenshots links, handle this image input conditionally: If links are provided, use the links. If a number is provided, use placeholders from https://placehold.co. For example: Input 3 → Output 3 placeholders. Input [url1, url2] → Output those 2 images: ',
     placeholder: 'e.g., https://web.com/screenshot1.png, https://adc.com/screenshot2.png (leave blank if none)',
     required: false
   },

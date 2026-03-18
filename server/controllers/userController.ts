@@ -161,14 +161,14 @@ export const createUserProject = async (req: Request, res: Response) => {
                 projectId: project.id
             }
         });
-
+        const providerArray = userPlan.isPaid ?  ["alibaba"] : ["parasail", "together", "novita"];
         // Generate website code
         const codeGenerationResponse = await openai.chat.completions.create({
             model: modelName,
             // @ts-ignore or cast as any
             ...({
                 provider: {
-                order: ["parasail", "novita", "together",],
+                order: providerArray,
                 allow_fallbacks: false
                 }
             } as any),
@@ -555,30 +555,55 @@ Add the following libraries in the page header when necessary:
 
 - <script src="https://cdn.tailwindcss.com"></script>
 - <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet">
-- <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
-- <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-- <script src="https://unpkg.com/lucide@latest"></script>
-- <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+- <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 - <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
 - <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
-- <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-- <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.11.2/lottie.min.js"></script>
-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
-- <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
-- <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css" />
-- <script src="https://unpkg.com/@popperjs/core@2"></script>
-- <script src="https://unpkg.com/tippy.js@6"></script>
+- <script src="https://unpkg.com/lucide@latest"></script>
+- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
 - **Tailwind CSS**: Use for all styling (utility-first approach)
 - **Flowbite**: Use for pre-built components (buttons, modals, tables, tabs, alerts, cards, dialogs, dropdowns, accordions, etc)
 - **Lucide Icons**: Use for crisp, modern icons throughout
 - **AOS (Animate On Scroll)**: Implement scroll-triggered animations
-- **GSAP**: Use for advanced animations and interactions
 - **Swiper**: Use for testimonial carousels or image sliders
-- **Chart.js**: Use if data visualization is needed
-- **Tippy.js**: Use for elegant tooltips
-- **Lottie**: Use for animated illustrations (if needed)
+
+- **Every HTML page generated must conclude with the following script block immediately before the closing </body> tag to ensure all animations and icons render correctly:**
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // 1. Initialize Icons
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+
+        // 2. Initialize AOS (Scroll Animations)
+        if (typeof AOS !== 'undefined') {
+            AOS.init({
+                duration: 800,
+                once: true,
+                offset: 100,
+                disable: 'mobile' // Optional: improves performance on phones
+            });
+        }
+
+        // 3. Initialize Swiper (If any sliders exist)
+        if (document.querySelector('.swiper')) {
+            new Swiper('.swiper', {
+                loop: true,
+                pagination: { el: '.swiper-pagination' },
+                navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+                autoplay: { delay: 5000 },
+            });
+        }
+    });
+
+    // Refresh AOS on scroll/resize to fix layout shifts
+    window.addEventListener('load', () => {
+        if (typeof AOS !== 'undefined') AOS.refresh();
+    });
+</script>
 
 ## Content Guidelines
 

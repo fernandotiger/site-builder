@@ -19,6 +19,7 @@ export async function sendVerificationEmail(to: string, verificationUrl: string)
     html: `
       <p>Please click the link below to activate your account:</p>
       <a style="margin-top: 20px;" href="${verificationUrl}">Click here - Activate Account</a>
+      <p>Please note that the best way to test the functionalities of your landing page is by downloading it and opening it in a browser.</p>
       <p style="margin-top: 24px; font-size: 12px; color: #888;">
         If you did not create an account, please ignore this email.
       </p>

@@ -2,6 +2,7 @@ import {Request, Response} from 'express'
 import prisma from '../lib/prisma.js';
 import openai from '../configs/openai.js';
 import { getAiModelNameForUser, getAiModelNameRevisionForUser } from '../configs/aiConfigResolver.js';
+import { getPlanData } from './userController.js';
 
 // Controller Function to Make Revision 
 export const makeRevision = async (req: Request, res: Response) => {
@@ -102,14 +103,15 @@ export const makeRevision = async (req: Request, res: Response) => {
                 projectId: projectId as string
             }
         });
-
+        const userPlan = await getPlanData(userId as string);
+        const providerArray = userPlan.isPaid ?  ["alibaba"] : ["parasail", "together", "novita"];
         // Generate website code
         const codeGenerationResponse = await openai.chat.completions.create({
             model: modelNameRevision, 
             // @ts-ignore or cast as any
             ...({
                 provider: {
-                order: ["parasail", "novita","together" ],
+                order: providerArray,
                 allow_fallbacks: false
                 }
             } as any),
@@ -429,6 +431,8 @@ const CheckerPrompt = `
                      - A free user can create 1 landing page, a pro user can create up to 3 landing pages and an enterprise user can create up to 10 landing pages. If the user wants to create more landing pages, they should contact the support team.
                      - The community page shows published landing pages created by other users.
                      - The tutorial page can be found on the top menu and has step by step guides on how to use the system and create your first engaging landing page.
+                     - When you visualize the landing page in preview mode, you are seeing exactly how the landing page will look like for the end users, but as it is inside a container some elements/buttons might behave differently.
+                     - The best way to test the functionalities of the landing page is by publishing it and visualizing it in a new tab, or downloading it and opening it in a browser.
 
                     Return the json Code Only, nothing else
                     `
