@@ -137,7 +137,7 @@ const questions: Question[] = [
     id: 'imagery',
     category: 'Brand Assets',
     question: 'Paste the links to your images below, separated by commas. Or type how many images you want to upload later.',
-    affirmation: 'Here are the imagery links, handle this image input conditionally: If links are provided, use the links. If a number is provided, use placeholders from https://placehold.co. For example: Input 3 → Output 3 placeholders. Input [url1, url2] → Output those 2 images: ',
+    affirmation: 'I need an extra section to show some images. Here are the images information, handle this image input conditionally: If links are provided, use the links. If a number is provided, use placeholders from https://placehold.co. For example: Input 3 → Output 3 placeholders. Input [url1, url2] → Output those 2 images: ',
     placeholder: 'e.g., https://web.com/hero-img.jpg, https://adc.com/img.jpg... (leave blank if none)',
     required: false
   },
@@ -153,11 +153,12 @@ const questions: Question[] = [
     id: 'screenshots',
     category: 'Brand Assets',
     question: 'Paste the links to your product/service screenshots below, separated by commas. Or type how many screenshots you want to upload later.',
-    affirmation: 'Here are the product/service screenshots links, handle this image input conditionally: If links are provided, use the links. If a number is provided, use placeholders from https://placehold.co. For example: Input 3 → Output 3 placeholders. Input [url1, url2] → Output those 2 images: ',
+    affirmation: 'I need an extra section to show some screenshots of the product. Here are the product/service screenshots information, handle this image input conditionally: If links are provided, use the links. If a number is provided, use placeholders from https://placehold.co. For example: Input 3 → Output 3 placeholders. Input [url1, url2] → Output those 2 images: ',
     placeholder: 'e.g., https://web.com/screenshot1.png, https://adc.com/screenshot2.png (leave blank if none)',
     required: false
   },
 ];
+let addGDPRInfo = false;
 
 const Home = () => {
   const {data: session} = authClient.useSession();
@@ -188,7 +189,10 @@ const Home = () => {
       toast.error('This field is required');
       return;
     }
-
+    if(currentQuestion.id === 'socialMediaTracking'){
+      addGDPRInfo = currentAnswer.trim() !== '' ? true : false;
+    }
+    
     // Save current answer
     setAnswers(prev => ({
       ...prev,
@@ -224,7 +228,7 @@ const Home = () => {
         .filter(Boolean)
         .join('\n\n');
 
-      const {data} = await api.post('/api/user/project', {initial_prompt: prompt});
+      const {data} = await api.post('/api/user/project', {initial_prompt: prompt, addGDPRInfo: addGDPRInfo});
       setLoading(false);
       navigate(`/projects/${data.projectId}`)
     } catch (error: any) {

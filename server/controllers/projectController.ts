@@ -104,7 +104,7 @@ export const makeRevision = async (req: Request, res: Response) => {
             }
         });
         const userPlan = await getPlanData(userId as string);
-        const providerArray = userPlan.isPaid ?  ["alibaba"] : ["parasail", "together", "novita"];
+        const providerArray = userPlan.isPaid ?  ["alibaba"] :  ["minimax", "novita"];
         // Generate website code
         const codeGenerationResponse = await openai.chat.completions.create({
             model: modelNameRevision, 
@@ -370,15 +370,17 @@ export const saveProjectCode = async (req: Request, res: Response) => {
         if(!project){
             return res.status(404).json({ message: 'Project not found' });
         }
-
-        // Check if domain is already taken by another project
-        const existingDomain = await prisma.websiteProject.findFirst({
-            where: {
-                custom_domain: customDomain,
-                NOT: { id: projectId as string } // exclude the current project
-            }
-        });
-
+        let existingDomain = null;
+        if(customDomain != null && customDomain.trim() !== ''){
+            // Check if domain is already taken by another project
+            existingDomain = await prisma.websiteProject.findFirst({
+                where: {
+                    custom_domain: customDomain,
+                    NOT: { id: projectId as string } // exclude the current project
+                }
+            });
+        }
+        
         if (existingDomain) {
             return res.status(409).json({ message: 'This domain is already in use by another project.' });
         }

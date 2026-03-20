@@ -5,6 +5,7 @@ import Stripe from 'stripe'
 import { getAiModelNameForUser } from '../configs/aiConfigResolver.js';
 import { sendProjectCompletedEmail } from '../lib/mailer.js';
 
+let addGDPRPrompt = '';
 // Get User Credits
 export const getUserCredits = async (req: Request, res: Response) => {
     try {
@@ -60,9 +61,10 @@ export const createUserProject = async (req: Request, res: Response) => {
     const userId = req.userId;
     const modelName = await getAiModelNameForUser(userId as string);
     const userPlan = await getPlanData(userId as string);
+    let projectId = null;
     
     try {
-        const { initial_prompt } = req.body;
+        const { initial_prompt, addGDPRInfo } = req.body;
 
         if(!userId){
             return res.status(401).json({ message: 'Unauthorized' });
@@ -94,7 +96,7 @@ export const createUserProject = async (req: Request, res: Response) => {
             where: {id: userId},
             data: {totalCreation: {increment: 1}}
         })
-
+        projectId = project.id;
         await prisma.conversation.create({
             data: {
                 role: 'user',
@@ -161,7 +163,8 @@ export const createUserProject = async (req: Request, res: Response) => {
                 projectId: project.id
             }
         });
-        const providerArray = userPlan.isPaid ?  ["alibaba"] : ["parasail", "together", "novita"];
+        addGDPRPrompt = getGDPRPrompt(addGDPRInfo);
+        const providerArray = userPlan.isPaid ?  ["alibaba"] : ["minimax", "novita"];
         // Generate website code
         const codeGenerationResponse = await openai.chat.completions.create({
             model: modelName,
@@ -183,7 +186,8 @@ export const createUserProject = async (req: Request, res: Response) => {
                 }
             ]
         })
-
+console.log('Prompt: ', Prompt);
+console.log('addGDPRInfo: ', addGDPRInfo);
         const code = codeGenerationResponse.choices[0].message.content || '';
 
         if(!code){
@@ -193,11 +197,11 @@ export const createUserProject = async (req: Request, res: Response) => {
                     content: "Unable to generate the code, please try again",
                     projectId: project.id
                 }
-            })
+            });
             await prisma.user.update({
                 where: {id: userId},
                 data: {credits: {increment: 5}}
-            })
+            });
             return;
         }
 
@@ -245,7 +249,17 @@ export const createUserProject = async (req: Request, res: Response) => {
         await prisma.user.update({
             where: {id: userId},
             data: {credits: {increment: 5}}
-        })
+        });
+        if(projectId){
+            await prisma.conversation.create({
+                data: {
+                    role: 'assistant',
+                    content: "Unable to generate the code, please try again or contact the support if the issue persists.",
+                    projectId: projectId
+                }
+            });
+        }
+        
         console.log(error);
         res.status(500).json({ message: error.message });
     }
@@ -429,12 +443,10 @@ You are an expert landing page designer and developer specializing in creating m
 
     1.1. **Randomize the Design Style from the list available below:**
     - Neobrutalist (raw, bold, confrontational with structured impact)
-    - Swiss/International (grid-based, systematic, ultra-clean typography)
     - Editorial (magazine-inspired, sophisticated typography, article-focused)
     - Glassmorphism (translucent layers, blurred backgrounds, depth)
     - Retro-futuristic (80s vision of the future, refined nostalgia)
     - Bauhaus (geometric simplicity, primary shapes, form follows function)
-    - Art Deco (elegant patterns, luxury, vintage sophistication)
     - Minimal (extreme reduction, maximum whitespace, essential only)
     - Flat (no depth, solid colors, simple icons, clean)
     - Material (Google-inspired, cards, subtle shadows, motion)
@@ -467,6 +479,7 @@ You are an expert landing page designer and developer specializing in creating m
    - Implement a sticky header with navigation menu
    - Ensure the page flows logically from awareness to action
    - Keep the most important information above the fold
+   - Do not use forms for the CTAs, just buttons that link to the CTA URL provided by the user.
 
 ## Required Sections (Standard Landing Page Structure)
 
@@ -549,17 +562,21 @@ Include these sections in order, adapting based on user input:
    - **DO NOT include navigation links, legal links, or other footer links**
    - Keep footer minimal and clean
 
+${addGDPRPrompt}
+
 ## Available Libraries & Technologies
 
-Add the following libraries in the page header when necessary:
+Every HTML page generated must include the following libraries in the page header:
 
 - <script src="https://cdn.tailwindcss.com"></script>
 - <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet">
 - <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 - <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+Every HTML page generated must include the following libraries in the page before the closing </head> tag:
 - <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
 - <script src="https://unpkg.com/lucide@latest"></script>
-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
 - **Tailwind CSS**: Use for all styling (utility-first approach)
 - **Flowbite**: Use for pre-built components (buttons, modals, tables, tabs, alerts, cards, dialogs, dropdowns, accordions, etc)
@@ -567,7 +584,7 @@ Add the following libraries in the page header when necessary:
 - **AOS (Animate On Scroll)**: Implement scroll-triggered animations
 - **Swiper**: Use for testimonial carousels or image sliders
 
-- **Every HTML page generated must conclude with the following script block immediately before the closing </body> tag to ensure all animations and icons render correctly:**
+- Every HTML page generated must conclude with the following script block immediately before the closing </body> tag to ensure all animations and icons render correctly:
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
@@ -628,6 +645,7 @@ Add the following libraries in the page header when necessary:
 
 - This includes: Hero CTA, pricing CTAs, final CTA section, and any other action buttons
 - Ensure CTAs are visually prominent with proper Tailwind classes
+- Do not use form 
 
 ## Social Media Configuration
 
@@ -763,6 +781,7 @@ When you receive the user information:
 7. When necessary image of something, create an empty default image that can be replaced with a real image later.
 
 Generate a landing page that is not just functional, but exceptional - one that would genuinely convert visitors into customers.
+Do not include any internal AI preview styles, meta-tags like 'ai-selected-element', or interface-specific CSS classes. The output should be clean, production-ready HTML that can be deployed as-is.
 - Return the HTML Code Only, nothing else
 `;
 
@@ -780,6 +799,23 @@ function canCreateNewProject(user: any, userPlan: any) {
     const maxProjects = projectLimits[planName] || 1;
     
     return user.totalCreation <= maxProjects;
+}
+
+function getGDPRPrompt(addGDPRInfo: boolean) {
+    if(addGDPRInfo){
+        return `Add a GDPR-compliant Cookie Consent Popup to the webpage. It must follow these logic rules:
+
+                    - Visuals: Create a modern, fixed-bottom-bar or modal using Tailwind CSS. Include 'Accept All', 'Reject Non-Essential', and 'Settings' buttons.
+
+                    - State Management: Use localStorage to remember the user's choice so the popup doesn't reappear on every refresh.
+
+                    - Conditional Script Execution: This is critical. Do NOT load the tracking scripts (e.g., Google Analytics, Meta Pixel) on page load. Instead, wrap the tracking codes in a function named loadTrackingScripts().
+
+                    - The Trigger: Call loadTrackingScripts() ONLY if the user clicks 'Accept' or if localStorage shows they previously accepted.
+
+                    - Script Tags: For the tracking codes provided, place them inside a <script type="text/plain" data-category="analytics"> tag so the browser ignores them until the JS changes the type to text/javascript upon consent.`;
+    }
+    return '';
 }
 
 /*const Prompt = `{
