@@ -2,7 +2,7 @@ import 'dotenv/config';
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import prisma from "./prisma.js";
-import { sendVerificationEmail } from './mailer.js';
+import { sendVerificationEmail, sendResetPassword } from './mailer.js';
 
 const trustedOrigins = process.env.TRUSTED_ORIGINS?.split(',') || [];
 
@@ -13,7 +13,14 @@ export const auth = betterAuth({
     emailAndPassword: { 
         enabled: true, 
         requireEmailVerification: true,
-        sendEmailVerificationOnSignUp: true
+        sendEmailVerificationOnSignUp: true,
+        sendResetPassword: async ({ user, url }) => {
+          const resetUrl = url.replace(
+            process.env.BETTER_AUTH_URL! + '/api/auth', 
+            process.env.FRONTEND_URL!
+          );
+          await sendResetPassword( user.email,  resetUrl);
+        }
     },
     user: {
       deleteUser: {
@@ -41,8 +48,14 @@ export const auth = betterAuth({
             }
           });
 
-      // Cascades handle the actual cleanup (no manual deletes needed)
-    }
+        // Cascades handle the actual cleanup (no manual deletes needed)
+        }
+      },
+      additionalFields: {
+        planId: {
+        type: "string",
+        required: false,
+      }
       }
     },
     trustedOrigins,

@@ -8,10 +8,10 @@ export const addCredits =
         {
             id: 'add',
             name: 'Add Credits',
-            price: '€7',
-            credits: 50,
+            price: '€10',
+            credits: 100,
             description: 'Add credits to customize projects.',
-            features: ['Custom Domain', 'Advanced AI Models', 'Extended Revisions', 'Page Element Edition', 'Landing Page Hosting', 'Priority email support', 'Tutorial',],
+            features: ['Increase credits','Advanced AI Models', 'Extended Revisions', 'Page Element Edition', 'Priority email support', 'Tutorial',],
         }
     
 
@@ -27,18 +27,18 @@ export const appPlans = [
         {
             id: 'pro',
             name: 'Pro',
-            price: '€7',
-            credits: 50,
+            price: '€50',
+            credits: 500,
             description: 'Add credits to create more projects',
-            features: ['Up to 4 Landing Pages', 'Custom Domain', 'Advanced AI Models', 'Extended Revisions', 'Page Element Edition', 'Landing Page Hosting', 'Priority email support', 'Tutorial',],
+            features: ['Up to 1 Landing Page', 'Custom Domain', '1 Year Landing Page Hosting', 'Advanced AI Models', 'Extended Revisions', 'Page Element Edition', 'Priority email support', 'Tutorial',],
         },
         {
             id: 'enterprise',
-            name: 'Enterprise',
-            price: '€25',
-            credits: 250,
+            name: 'Ent',
+            price: '€100',
+            credits: 1200,
             description: 'Add credits to create more projects',
-            features: ['Up to 15 Landing Pages', 'Custom Domain', 'Advanced AI Models', 'Increased Revisions', 'Page Element Edition', 'Landing Page Hosting', 'Priority email + chat support', 'Tutorial',],
+            features: ['Up to 4 Landing Pages', 'Custom Domain', '1 Year Landing Page Hosting', 'Advanced AI Models', 'Increased Revisions', 'Page Element Edition', 'Priority email + chat support', 'Tutorial',],
         }
     ]
 

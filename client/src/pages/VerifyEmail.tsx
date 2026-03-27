@@ -26,7 +26,7 @@ export default function VerifyEmail() {
                 setMessage(res.error.message || 'Email verification failed. Please try again.');
             } else {
                 setStatus('success');
-                setTimeout(() => { navigate('/auth/signin');}, 3000);
+                setTimeout(() => { navigate('/tutorial');}, 3000);
             }
         })
         .catch((err) => {
@@ -47,7 +47,7 @@ export default function VerifyEmail() {
                 <>
                     <div className="text-5xl mb-6">✅</div>
                     <h1 className="text-2xl font-bold mb-2 text-gray-900">Email Verified Successfully!</h1>
-                    <p className="text-gray-500">You will be redirected to the login page shortly.</p>
+                    <p className="text-gray-500">You will be redirected to the tutorial page shortly.</p>
                 </>
             )}
             {status === 'error' && (

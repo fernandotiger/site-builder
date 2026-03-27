@@ -41,7 +41,7 @@ const Navbar = () => {
             <Link to='/projects'>My Projects</Link>
             <Link to='/community'>Community</Link>
             <Link to='/pricing'>Pricing</Link>
-            
+            {session?.user && <Link to='/tutorial'>Tutorial</Link>}
           </div>
 
           <div className="flex items-center gap-3">

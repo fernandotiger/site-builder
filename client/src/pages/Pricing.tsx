@@ -21,7 +21,8 @@ const Pricing = () => {
     const userLoggedIn = (session?.user) ? true : false;
     const titlePage = (session?.user) ? "Upgrade or add more Credits" : "Choose Your Plan";
     const descriptionPage = (session?.user) ? "Add more credits and continue customizing your content." : "Start for free and scale up as you grow. Find the perfect plan for your content creation needs.";
-
+    
+    const userPlanId = (session?.user as any)?.planId;
     const handlePurchase = async (planId: string) => {
         try {
             if(!session?.user) {
@@ -38,7 +39,7 @@ const Pricing = () => {
             console.log(error);
         }
     }
-    
+
   return (
     <>
       <div className='w-full max-w-5xl mx-auto z-20 max-md:px-4 min-h-[80vh]'>
@@ -47,7 +48,7 @@ const Pricing = () => {
             <p className='text-gray-400 text-sm max-w-md mx-auto mt-2'>{descriptionPage}</p>
         </div>
         <div className='pt-14 py-4 px-4 '>
-            {userLoggedIn && (
+            {(userLoggedIn &&  (userPlanId == 'pro' || userPlanId == 'enterprise')) && (
                 <div className='mb-10 text-center'>
                         <div  className="p-6 bg-black/20 ring ring-indigo-950 mx-auto w-full max-w-sm rounded-lg text-white shadow-lg hover:ring-indigo-500 transition-all duration-400">
                                 <h3 className="text-xl font-bold">{addCredits.name}</h3>
@@ -80,7 +81,7 @@ const Pricing = () => {
             <div className='grid grid-cols-1 md:grid-cols-3 flex-wrap gap-4'>
                         {plans.map((plan, idx) => (
                             <div key={idx} className="p-6 bg-black/20 ring ring-indigo-950 mx-auto w-full max-w-sm rounded-lg text-white shadow-lg hover:ring-indigo-500 transition-all duration-400">
-                                <h3 className="text-xl font-bold">{plan.name}</h3>
+                                <h3 className="text-xl font-bold">{plan.name} {plan.id != 'basic' && <label> - 1 year hosting included</label>}</h3>
                                 <div className="my-2">
                                     <span className="text-4xl font-bold">{plan.price}</span>
                                     <span className="text-gray-300"> / {plan.credits} credits</span>
@@ -99,9 +100,11 @@ const Pricing = () => {
                                         </li>
                                     ))}
                                 </ul>
+                                {plan.id != 'basic' &&
                                 <button onClick={() => handlePurchase(plan.id)} className="w-full py-2 px-4 bg-indigo-500 hover:bg-indigo-600 active:scale-95 text-sm rounded-md transition-all">
                                     Join Now
                                 </button>
+                                }
                             </div>
                         ))}
                 </div>

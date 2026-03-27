@@ -349,7 +349,7 @@ export const togglePublish = async (req: Request, res: Response) => {
     }
 }
 
-// Controller Function to Purchase Credits
+// Controller Function to Purchase Credits - REPLACED BY subscribe.controller.ts
 export const purchaseCredits = async (req: Request, res: Response) => {
     try {
         interface Plan {
@@ -358,9 +358,10 @@ export const purchaseCredits = async (req: Request, res: Response) => {
         }
 
         const plans = {
-            basic: {credits: 50, amount: 7},
-            pro: {credits: 50, amount: 7},
-            enterprise: {credits: 250, amount: 25},
+            basic: {credits: 500, amount: 0.1},
+            pro: {credits: 500, amount: 0.1},
+            enterprise: {credits: 1200, amount: 0.1},
+            add: {credits: 100, amount: 0.1}
         }
 
         const userId = req.userId;
@@ -392,7 +393,7 @@ export const purchaseCredits = async (req: Request, res: Response) => {
                 line_items: [
                     {
                     price_data: {
-                        currency: 'usd',
+                        currency: 'eur',
                         product_data: {
                             name: `PageningAiSiteBuilder - ${plan.credits} credits`
                         },
@@ -790,9 +791,9 @@ function canCreateNewProject(user: any, userPlan: any) {
     if (!user) return true;
     
     const projectLimits: { [key: string]: number } = {
-        'basic': 51,
-        'pro': 54,
-        'enterprise': 15
+        'basic': 1,
+        'pro': 1,
+        'enterprise': 4
     };
     
     const planName = userPlan?.json?.name || 'basic';

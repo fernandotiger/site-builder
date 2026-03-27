@@ -411,6 +411,7 @@ const CheckerPrompt = `
 
                         If the user wants to make question about functionalities of my saas, return a JSON only with this format: { "type": "question", "answer": "the answer to the user's question" }
                         If the user wants to make changes to their website, return a JSON only with this format: { "type": "change", "answer": "empty" }
+                        If the user's prompt is complaining about some issue on the web page, return a JSON only with this format: { "type": "change", "answer": "empty" }
 
                     Here are the functionalities of my saas you can answer about:
                      - Create a Landing Page: go to Homepage and click on "Create Landing Page" button or in My Projects click on "Create New".
@@ -435,6 +436,7 @@ const CheckerPrompt = `
                      - The tutorial page can be found on the top menu and has step by step guides on how to use the system and create your first engaging landing page.
                      - When you visualize the landing page in preview mode, you are seeing exactly how the landing page will look like for the end users, but as it is inside a container some elements/buttons might behave differently.
                      - The best way to test the functionalities of the landing page is by publishing it and visualizing it in a new tab, or downloading it and opening it in a browser.
+                     - The user should copy and paste any previous prompt or question as this chat does not have memory of the previous conversations, so if the user wants to repeat a question or order something, they should paste it again.
 
                     Return the json Code Only, nothing else
                     `

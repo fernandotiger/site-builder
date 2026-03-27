@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import Stripe from 'stripe';
 import prisma from '../lib/prisma.js';
 
+// this is the old webhook
 export const stripeWebhook = async (request: Request, response: Response)=>{
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string)
     const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET as string;
@@ -43,7 +44,7 @@ export const stripeWebhook = async (request: Request, response: Response)=>{
         // Add the credits to the user data
         await prisma.user.update({
             where: {id: transaction.userId},
-            data: {credits: {increment: transaction.credits}}
+            data: {credits: {increment: transaction.credits}, planId: transaction.planId}
         })
       }
       break;

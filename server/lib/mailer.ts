@@ -61,3 +61,17 @@ export async function sendProjectCompletedEmail(
     `
   });
 }
+
+export async function sendResetPassword(to: string, url: string) : Promise<void> {
+  const mailOptions = {
+    from: process.env.EMAIL_FROM,
+    to,
+    subject: "Reset your password",
+    text: `Click here to reset your password: ${url}`,
+    html: `
+      <p>Please click the link below to reset your password at Pagening:</p>
+      <a style="margin-top: 20px;" href="${url}">Reset password here</a>
+    `
+  };
+  await transporter.sendMail(mailOptions);
+}

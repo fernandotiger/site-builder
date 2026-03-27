@@ -10,8 +10,11 @@ import { auth } from './lib/auth.js';
 import userRouter from './routes/userRoutes.js';
 import projectRouter from './routes/projectRoutes.js';
 import { stripeWebhook } from './controllers/stripeWebhook.js';
+// new stripe - import { stripeWebhook } from  './controllers/webhook.controller.js';
 import imageRouter from './routes/image.js';
 import deployRouter from './routes/deployroutes.js';
+import purchaseRouter from './routes/purchaseRoutes.js';
+import tutorialRouter from './routes/tutorialRoutes.js';
 
 const app = express();
 
@@ -24,6 +27,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions))
 app.post('/api/stripe', express.raw({type: 'application/json'}), stripeWebhook)
+// new stripe - app.post('/api/stripe',  express.raw({ type: 'application/json' }),  stripeWebhook);
 
 app.all('/api/auth/{*any}', toNodeHandler(auth));
 
@@ -38,6 +42,10 @@ app.use('/api/project', projectRouter);
 app.use('/api/image', imageRouter);
 
 app.use('/api/deploy', deployRouter);
+
+app.use('/api/purchase', purchaseRouter);
+
+app.use('/api/tutorials', tutorialRouter);
 
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);

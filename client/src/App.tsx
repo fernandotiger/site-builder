@@ -14,6 +14,10 @@ import Settings from './pages/Settings'
 import Loading from './pages/Loading'
 import VerifyEmailNotice from './pages/VerifyEmailNotice'
 import VerifyEmail from './pages/VerifyEmail'
+import ResetPassword from './pages/reset-password'
+import GettingStarted from './pages/GettingStarted'
+import Terms from './pages/Terms'
+import Privacy from './pages/Privacy'
 
 const App = () => {
 
@@ -42,6 +46,10 @@ const App = () => {
         <Route path='/loading' element={<Loading />}/>
         <Route path='/verify-email-notice' element={<VerifyEmailNotice />}/>
         <Route path='/verify-email' element={<VerifyEmail />}/>
+        <Route path='/reset-password/:token' element={<ResetPassword />}/>
+        <Route path='/tutorial' element={<GettingStarted />}/>
+        <Route path='/terms' element={<Terms />}/>
+        <Route path='/privacy' element={<Privacy />}/>
       </Routes>
     </div>
   )

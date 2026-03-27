@@ -22,6 +22,12 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   emailVerified Boolean   @default(false)
+  // stripe
+  stripeCustomerId    String?
+  subscriptionId      String?
+  subscriptionStatus  String?   @default("inactive")
+  planId              String?   @default("basic")
+  cancelAt     DateTime?
   
   // Relations
   projects WebsiteProject[]
@@ -146,6 +152,18 @@ model DeletedUser {
   email       String
   snapshot    Json     // full data dump
   deletedAt   DateTime @default(now())
+}
+
+model Tutorial {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  youtubeUrl  String
+  category    String   @default("General")
+  order       Int      @default(0)
+  published   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 

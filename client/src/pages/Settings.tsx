@@ -60,15 +60,14 @@ const Settings = () => {
           </div>
           <div data-slot="card-content" className="px-6">
             <div data-slot="form-item" className="grid gap-2">
-              {userPlan?.name} - ${userPlan?.price}/month
+              {userPlan?.name} - 1 year Landing Page hosting included
             </div>
           </div>
           <div data-slot="card-footer" className="items-center px-6 [.border-t]:pt-6 flex flex-col justify-between gap-4 rounded-b-xl md:flex-row !py-4 border-t bg-black/10 ring ring-indigo-950">
             <div data-slot="card-description" className="text-center text-muted-foreground text-xs md:text-start md:text-sm">
               
             </div>
-            <button data-slot="button" className="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*='size-'])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive bg-destructive text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60 h-8 rounded-md gap-1.5 px-3 has-[&gt;svg]:px-2.5 md:ms-auto" type="button">Delete Plan</button>
-          </div>
+            </div>
         </div>
       </div>
       <div className="w-full">
