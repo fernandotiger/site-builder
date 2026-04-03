@@ -257,7 +257,7 @@ const Home = () => {
             </div>
 
             <h1 className="text-center text-[40px] leading-[48px] md:text-6xl md:leading-[70px] mt-4 font-semibold max-w-3xl">
-              Turn thoughts into Landing Pages instantly, with AI.
+              Turn answers into Landing Pages instantly, with AI.
             </h1>
 
             <p className="text-center text-base max-w-md mt-2 text-gray-300">
